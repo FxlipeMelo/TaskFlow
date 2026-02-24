@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task List{% endblock %}
+
+{% block body %}
+<table class="table table-striped-columns">
+    <caption>Lista de tarefas</caption>
+    <thead>
+        <tr>
+            <th>id</th>
+            <th scope="col">Task</th>
+            <th scope="col">Category</th>
+            <th scope="col">Priority</th>
+        </tr>
+    </thead>
+    {% for task in taskList %}
+        <tbody>
+            <tr>
+                <th scope="row">{{ task.id }}</th>
+                <td>{{ task.task }}</td>
+                <td>{{ task.category }}</td>
+                <td>{{ task.priority }}</td>
+            </tr>
+        </tbody>
+    {% endfor %}
+</table>
+{% endblock %}

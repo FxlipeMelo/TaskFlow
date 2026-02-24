@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Created tasks{% endblock %}
+
+{% block body %}
+    <ul class="list-group">
+        {% for category in categoryList %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    {{ category.name }}
+                </div>
+                {% if is_granted('ROLE_USER') %}
+                    <div class="d-flex">
+                        <a href="{{ path('app_category_edit_form', {category: category.id}) }}" class="btn btn-sm btn-primary me-2">E</a>
+
+                        <form method="post" action="{{ path('app_category_delete', {category: category.id}) }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button class="btn btn-sm btn-danger">X</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
