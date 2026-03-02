@@ -16,6 +16,46 @@ class PriorityRepository extends ServiceEntityRepository
         parent::__construct($registry, Priority::class);
     }
 
+    public function add(Priority $input): Priority
+    {
+        $entityManager = $this->getEntityManager();
+        $connection = $entityManager->getConnection();
+        try {
+            $priority = new Priority();
+            $priority->setName($input->getName());
+            $entityManager->persist($priority);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            if ($connection->isTransactionActive()) {
+                $connection->rollBack();
+            }
+            if (isset($priority) && $entityManager->contains($priority)) {
+                $entityManager->detach($priority);
+            }
+            throw $e;
+        }
+        return $priority;
+    }
+
+    public function remove(Priority $priority, bool $flush = false)
+    {
+        $this->getEntityManager()->remove($priority);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function update(Priority $priority, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($priority);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+
     //    /**
     //     * @return Priority[] Returns an array of Priority objects
     //     */

@@ -17,7 +17,6 @@ class PriorityCreateFormType extends AbstractType
             ->add('save',  SubmitType::class, ['label' => $options['is_edit'] ? 'Edit' : 'Add'])
             ->setMethod($options['is_edit'] ? 'PATCH' : 'POST');
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

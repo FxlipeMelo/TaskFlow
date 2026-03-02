@@ -3,8 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\PriorityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\Collection;
 
 #[ORM\Entity(repositoryClass: PriorityRepository::class)]
 class Priority
@@ -21,6 +22,7 @@ class Priority
     public function __construct(
     )
     {
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int

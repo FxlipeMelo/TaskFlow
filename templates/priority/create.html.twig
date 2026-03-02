@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Create Priority {% endblock %}
+
+{% block body %}
+    {{ form_start(priorityCreateFormType) }}
+        {{ form_row(priorityCreateFormType.name) }}
+        {{ form_widget(priorityCreateFormType.save, {'attr': {'class': 'btn btn-dark'}}) }}
+    {{ form_end(priorityCreateFormType) }}
+{% endblock %}
