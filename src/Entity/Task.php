@@ -13,14 +13,13 @@ class Task
     #[ORM\Column]
     private int $id;
 
-    public function __construct(
-        #[ORM\Column(length: 255)]
-        private string $name,
-        #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'tasks')]
-        private Category $category,
-        #[ORM\ManyToOne(targetEntity: Priority::class, inversedBy: "tasks")]
-        private Priority $priority
-    )
+    #[ORM\Column(length: 255)]
+    private string $name;
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'tasks')]
+    private Category $category;
+    #[ORM\ManyToOne(targetEntity: Priority::class, inversedBy: "tasks")]
+    private Priority $priority;
+    public function __construct()
     {
     }
 

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Task{% endblock %}
+
+{% block body %}
+    {{ form_start(taskCreateFormType) }}
+        {{ form_row(taskCreateFormType.name) }}
+        {{ form_row(taskCreateFormType.category) }}
+        {{ form_row(taskCreateFormType.priority) }}
+        {{ form_widget(taskCreateFormType.save, {'attr': {'class': 'btn btn-dark'}}) }}
+    {{ form_end(taskCreateFormType) }}
+{% endblock %}

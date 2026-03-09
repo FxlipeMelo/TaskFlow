@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Priority;
+use App\Entity\Task;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -54,7 +55,6 @@ class PriorityRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
 
     //    /**
     //     * @return Priority[] Returns an array of Priority objects
