@@ -16,25 +16,13 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
-    public function add(Category $input): Category
+    public function add(Category $category, bool $flush = false): void
     {
-        $entityManager = $this->getEntityManager();
-        $connection = $entityManager->getConnection();
-        try {
-            $category = new Category();
-            $category->setName($input->getName());
-            $entityManager->persist($category);
-            $entityManager->flush();
-        } catch (\Exception $e) {
-            if ($connection->isTransactionActive()) {
-                $connection->rollBack();
-            }
-            if (isset($category) && $entityManager->contains($category)) {
-                $entityManager->detach($category);
-            }
-            throw $e;
+        $this->getEntityManager()->persist($category);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
         }
-        return $category;
     }
 
     public function remove(Category $category,bool $flush = false): void

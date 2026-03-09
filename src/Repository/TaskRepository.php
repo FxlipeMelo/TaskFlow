@@ -17,50 +17,22 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function add(Task $task): Task
+    public function add(Task $task, bool $flush = false): void
     {
-        $entityManager = $this->getEntityManager();
-        $connection = $entityManager->getConnection();
+        $this->getEntityManager()->persist($task);
 
-        $connection->beginTransaction();
-
-        try {
-            $entityManager->persist($task);
-            $entityManager->flush();
-
-            $connection->commit();
-        } catch (\Exception $e) {
-            if ($connection->isTransactionActive()) {
-                $connection->rollBack();
-            }
-            if (isset($task) && $entityManager->contains($task)) {
-                $entityManager->detach($task);
-            }
-            throw $e;
+        if ($flush) {
+            $this->getEntityManager()->flush();
         }
-        return $task;
     }
 
-    public function update(Task $task, bool $flush = false): Task
+    public function update(Task $task, bool $flush = false): void
     {
-        $entityManager = $this->getEntityManager();
-        $connection = $entityManager->getConnection();
-        $connection->beginTransaction();
+        $this->getEntityManager()->persist($task);
 
-        try {
-            $entityManager->persist($task);
-            $entityManager->flush();
-            $connection->commit();
-        } catch (\Exception $e) {
-            if ($connection->isTransactionActive()) {
-                $connection->rollBack();
-            }
-            if (isset($task) && $entityManager->contains($task)) {
-                $entityManager->detach($task);
-            }
-            throw $e;
+        if ($flush) {
+            $this->getEntityManager()->flush();
         }
-        return $task;
     }
 
     public function delete(Task $task, bool $flush = false): void

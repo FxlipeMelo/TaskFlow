@@ -31,10 +31,15 @@
                 <td>{{ task.name }}</td>
                 <td>{{ task.category }}</td>
                 <td>{{ task.priority }}</td>
-                <form method="post" action="{{ path('app_task_delete', {task: task.id}) }}">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="submit" class="btn btn-sm btn-danger">X</button>
-                </form>
+                <td>
+                    <div class="d-flex">
+                        <a href="{{ path('app_task_edit_form', {task: task.id}) }}" class="btn btn-sm btn-primary me-2">E</a>
+                            <form method="post" action="{{ path('app_task_delete', {task: task.id}) }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-sm btn-danger">X</button>
+                        </form>
+                    </div>
+                </td>
             </tr>
         </tbody>
     {% endfor %}

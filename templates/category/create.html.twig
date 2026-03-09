@@ -3,8 +3,8 @@
 {% block title %}Create category{% endblock %}
 
 {% block body %}
-    {{ form_start(categoryCreateForm) }}
-        {{ form_row(categoryCreateForm.name) }}
-        {{ form_widget(categoryCreateForm.save, {'attr': {'class': 'btn btn-dark'}}) }}
-    {{ form_end(categoryCreateForm) }}
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_widget(form.save, {'attr': {'class': 'btn btn-dark'}}) }}
+    {{ form_end(form) }}
 {% endblock %}

@@ -34,9 +34,7 @@ final class TaskController extends AbstractController
         $task = new Task();
         $form = $this->createForm(TaskCreateFormType::class, $task)->handleRequest($request);
 
-        return $this->render('task/create.html.twig', [
-            'taskCreateFormType' => $form
-        ]);
+        return $this->render('task/create.html.twig', compact('form'));
     }
     #[Route('task/create', name: 'app_task_create', methods: ['POST'])]
     public function createTask(Request $request): Response
@@ -44,10 +42,11 @@ final class TaskController extends AbstractController
         $task = new Task();
         $form = $this->createForm(TaskCreateFormType::class, $task)->handleRequest($request);
 
-        if (!$form->isValid()) {
+        if (!$form->isSubmitted() || !$form->isValid()) {
             return $this->render('task/create.html.twig', compact('form'));
         }
-        $this->taskRepository->add($task);
+        $this->taskRepository->add($task, true);
+        $this->addFlash('success', 'Task created!');
         return $this->redirectToRoute('app_task');
     }
 
@@ -55,20 +54,19 @@ final class TaskController extends AbstractController
     public function editTaskForm(Request $request, Task $task): Response
     {
         $form = $this->createForm(TaskCreateFormType::class, $task, ['is_edit' => true])->handleRequest($request);
-        return $this->render('task/create.html.twig', [
-            'taskCreateFormType' => $form
-        ]);
+        return $this->render('task/create.html.twig', compact('form', 'task'));
     }
 
-    #[Route('task/edit/{task}', name: 'app_task_edit', methods: ['PATCH'])]
+    #[Route('/task/edit/{task}', name: 'app_task_edit', methods: ['PATCH'])]
     public function editTask(Request $request, Task $task): Response
     {
         $form = $this->createForm(TaskCreateFormType::class, $task, ['is_edit' => true])->handleRequest($request);
-        if (!$form->isValid()) {
-            return $this->render('task/create.html.twig', compact('form', $task));
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return $this->render('task/create.html.twig', compact('form', 'task'));
         }
 
         $this->taskRepository->update($task, true);
+        $this->addFlash('success', 'Task updated!');
         return $this->redirectToRoute('app_task');
     }
 
@@ -76,6 +74,7 @@ final class TaskController extends AbstractController
     public function deleteTask(Request $request, Task $task): Response
     {
         $this->taskRepository->delete($task, true);
+        $this->addFlash('success', 'Task deleted!');
         return $this->redirectToRoute('app_task');
     }
 }

@@ -3,8 +3,9 @@
 {% block title %} Create Priority {% endblock %}
 
 {% block body %}
-    {{ form_start(priorityCreateFormType) }}
-        {{ form_row(priorityCreateFormType.name) }}
-        {{ form_widget(priorityCreateFormType.save, {'attr': {'class': 'btn btn-dark'}}) }}
-    {{ form_end(priorityCreateFormType) }}
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_widget(form.save, {'attr': {'class': 'btn btn-dark'}}) }}
+    {{ form_end(form) }}
 {% endblock %}
+
