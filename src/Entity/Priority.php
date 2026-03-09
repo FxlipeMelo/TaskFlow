@@ -13,10 +13,10 @@ class Priority
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private string $name;
+    private ?string $name = null;
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'priority')]
     private Collection $tasks;
     public function __construct(
@@ -35,7 +35,7 @@ class Priority
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -44,6 +44,6 @@ class Priority
 
     public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 }
