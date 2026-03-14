@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Spatie\Browsershot\Browsershot;
+use Dompdf\Dompdf;
 
 final class TaskController extends AbstractController
 {
@@ -36,7 +38,7 @@ final class TaskController extends AbstractController
 
         return $this->render('task/create.html.twig', compact('form'));
     }
-    #[Route('task/create', name: 'app_task_create', methods: ['POST'])]
+    #[Route('/task/create', name: 'app_task_create', methods: ['POST'])]
     public function createTask(Request $request): Response
     {
         $task = new Task();
@@ -70,11 +72,45 @@ final class TaskController extends AbstractController
         return $this->redirectToRoute('app_task');
     }
 
-    #[Route('task/delete/{task}', name: 'app_task_delete', methods: ['DELETE'])]
+    #[Route('/task/delete/{task}', name: 'app_task_delete', methods: ['DELETE'])]
     public function deleteTask(Request $request, Task $task): Response
     {
         $this->taskRepository->delete($task, true);
         $this->addFlash('success', 'Task deleted!');
         return $this->redirectToRoute('app_task');
+    }
+
+    #[Route('/task/report', name: 'app_task_report', methods: ['GET'])]
+    public function taskReport(Request $request): Response
+    {
+        $taskList = $this->taskRepository->findAll();
+        $manifestPath = $this->getParameter('kernel.project_dir') . '/public/build/manifest.json';
+        $cssContent = '';
+        if (file_exists($manifestPath)) {
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+            if (isset($manifest['build/app.css'])) {
+                $cssRealName = $manifest['build/app.css'];
+                $cssPath = $this->getParameter('kernel.project_dir') . '/public/' . $cssRealName;
+                if (file_exists($cssPath)) {
+                    $cssContent = file_get_contents($cssPath);
+                }
+            }
+        }
+        $html = $this->renderView('task/report.html.twig', [
+            'taskList' => $taskList,
+            'inline_css' => $cssContent
+        ]);
+        $pdf = Browsershot::html($html)->format('A4')->margins(10,10,10,10)->showBackground()->pdf();
+
+        return new Response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="task.pdf"'
+        ]);
+//        $dompdf = new Dompdf();
+//        $dompdf->loadHtml($html);
+//        $dompdf->setPaper('A4', 'portrait');
+//        $dompdf->render();
+//        $dompdf->stream("task.pdf", array("Attachment" => true));
+//        exit;
     }
 }

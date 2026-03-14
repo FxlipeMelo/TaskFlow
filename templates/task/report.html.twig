@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <style>
+            {{ inline_css|raw }}
+            /body { background-color: #FFFFFF; padding: 20px }
+        </style>
+    </head>
+
+    <body>
+    <h2>Task List</h2>
+    <table class="table">
+        <caption>Lista de tarefas</caption>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th scope="col">Task</th>
+            <th scope="col">Category</th>
+            <th scope="col">Priority</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for task in taskList %}
+            {% set row_class = '' %}
+            {% if task.priority%}
+                {% if task.priority.id == 1 %}
+                    {% set row_class = 'table-success' %}
+                {% elseif(task.priority.id == 2) %}
+                    {% set row_class = 'table-warning' %}
+                {% else %}
+                    {% set row_class = 'table-danger' %}
+                {% endif %}
+            {% endif %}
+
+            <tr class="{{ row_class }}">
+                <th scope="row">{{ task.id }}</th>
+                <td>{{ task.name }}</td>
+                <td>{{ task.category }}</td>
+                <td>{{ task.priority }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>

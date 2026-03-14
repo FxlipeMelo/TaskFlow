@@ -13,8 +13,9 @@
             <th scope="col">Priority</th>
         </tr>
     </thead>
-    {% for task in taskList %}
-        <tbody>
+
+    <tbody>
+        {% for task in taskList %}
             {% set row_class = '' %}
             {% if task.priority%}
                 {% if task.priority.id == 1 %}
@@ -41,7 +42,10 @@
                     </div>
                 </td>
             </tr>
-        </tbody>
-    {% endfor %}
+        {% endfor %}
+    </tbody>
 </table>
+<div>
+    <a href="{{ path('app_task_report') }}">Report</a>
+</div>
 {% endblock %}
