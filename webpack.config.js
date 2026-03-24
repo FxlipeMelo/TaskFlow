@@ -21,6 +21,7 @@ Encore
     // enables Sass/SCSS support
     .enableSassLoader()
     .addStyleEntry('style', './assets/styles/app.scss')
+    .addEntry('search', './assets/js/searchFilter.js')
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
 

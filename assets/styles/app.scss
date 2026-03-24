@@ -1,2 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+$primary: #4f46e5;
+$font-family-base: 'Inter', sans-serif;
+$body-bg: #f8fafc;
+$card-border-radius: 0.75rem;
+
 @import "bootstrap/scss/bootstrap";
 
+#sidebar {
+    transition: margin 0.3s ease-in-out;
+}
+#sidebar.collapsed {
+    margin-left: -260px;
+}
+.wrapper {
+    overflow-x: hidden;
+}
+.card{transition: transform 0.2s ease, box-shadow 0.2s ease;}
+.card:hover{transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;}
+
+html, body {
+    overflow-x: hidden;
+}
+
+@media (min-width: 768px) {
+    html, body { height: 100%; overflow: hidden !important;}
+    .wrapper{ height: 100vh !important; overflow: hidden !important;}
+    .flex-grow-1 { height: 100vh; overflow-y: auto !important; overflow-x: hidden;}
+}

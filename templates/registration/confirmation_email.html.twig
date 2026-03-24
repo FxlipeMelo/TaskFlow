@@ -1,11 +1,66 @@
-<h1>Hi! Please confirm your email!</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm your Email</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif; background-color: #f4f6f9;">
 
-<p>
-    Please confirm your email address by clicking the following link: <br><br>
-    <a href="{{ signedUrl|raw }}">Confirm my Email</a>.
-    This link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
-</p>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f6f9; padding: 40px 0;">
+    <tr>
+        <td align="center">
 
-<p>
-    Cheers!
-</p>
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+
+                <tr>
+                    <td align="center" style="background-color: #0d6efd; padding: 30px 20px;">
+                        <h2 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 1px;">✓ TaskManager</h2>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding: 40px 30px; color: #333333; line-height: 1.6; font-size: 16px;">
+                        <h3 style="margin-top: 0; color: #2c3e50;">Welcome aboard!</h3>
+
+                        <p style="color: #555555;">
+                            We're thrilled to have you. To secure your account and start managing your tasks efficiently, please confirm your email address by clicking the button below:
+                        </p>
+
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td align="center" style="padding: 30px 0;">
+                                    <a href="{{ signedUrl|raw }}" style="display: inline-block; padding: 14px 30px; background-color: #0d6efd; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
+                                        Confirm my Email
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="font-size: 14px; color: #777777; margin-bottom: 0;">
+                            If the button doesn't work, copy and paste the link below into your browser:<br>
+                            <a href="{{ signedUrl|raw }}" style="color: #0d6efd; word-break: break-all;">{{ signedUrl|raw }}</a>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding: 20px 30px; background-color: #f8f9fa; border-top: 1px solid #eeeeee;">
+                        <p style="margin: 0; font-size: 13px; color: #888888;">
+                            This security link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+                        </p>
+                        <p style="margin: 10px 0 0 0; font-size: 13px; color: #888888;">
+                            Cheers,<br>
+                            <strong>The TaskFlow Team</strong>
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
