@@ -28,48 +28,35 @@ final class PriorityController extends AbstractController
         ]);
     }
 
-    #[Route('/priority/create', name: 'app_priority_create_form', methods: ['GET'])]
+    #[Route('/priority/create', name: 'app_priority_create', methods: ['GET', 'POST'])]
     public function createPriorityForm(Request $request): Response
-    {
-        $priority = new Priority();
-        $form = $this->createForm(PriorityCreateFormType::class, $priority);
-
-        return $this->render('priority/create.html.twig', compact('form'));
-    }
-
-    #[Route('/priority/create', name: 'app_priority_create', methods: ['POST'])]
-    public function createPriority(Request $request): Response
     {
         $priority = new Priority();
         $form = $this->createForm(PriorityCreateFormType::class, $priority)->handleRequest($request);
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return $this->render('priority/create.html.twig', compact('form'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->priorityRepository->add($priority, true);
+            $this->addFlash('success', 'Priority created!');
+            return $this->redirectToRoute('app_priority');
         }
 
-        $this->priorityRepository->add($priority, true);
-        $this->addFlash('success', 'Priority created!');
-        return $this->redirectToRoute('app_priority');
+        return $this->render('priority/create.html.twig', compact('form'));
     }
 
-    #[Route('/priority/edit/{priority}', name: 'app_priority_edit_form', methods: ['GET'])]
+    #[Route('/priority/edit/{priority}', name: 'app_priority_edit', methods: ['GET', 'PATCH'])]
     public function editPriorityForm(Request $request, Priority $priority): Response
     {
-        $form = $this->createForm(PriorityCreateFormType::class, $priority, ['method' => 'PATCH']);
+        $form = $this->createForm(PriorityCreateFormType::class, $priority, ['method' => 'PATCH'])->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->priorityRepository->update($priority, true);
+            $this->addFlash('success', 'Priority updated!');
+            return $this->redirectToRoute('app_priority');
+        }
+
         return $this->render('priority/create.html.twig', compact('form', 'priority'));
     }
 
-    #[Route('/priority/edit/{priority}', name: 'app_priority_edit', methods: ['PATCH'])]
-    public function editPriority(Request $request, Priority $priority): Response
-    {
-        $form = $this->createForm(PriorityCreateFormType::class, $priority, ['method' => 'PATCH'])->handleRequest($request);
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return $this->render('priority/create.html.twig', compact('form', 'priority'));
-        }
-        $this->priorityRepository->update($priority, true);
-        $this->addFlash('success', 'Priority updated!');
-        return $this->redirectToRoute('app_priority');
-    }
     #[Route('/priority/delete/{priority}', name: 'app_priority_delete', methods: ['DELETE'])]
     public function deletePriority(Request $request, Priority $priority): Response
     {

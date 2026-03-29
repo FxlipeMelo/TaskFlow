@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Spatie\Browsershot\Browsershot;
-use Dompdf\Dompdf;
+// use Dompdf\Dompdf;
 
 final class TaskController extends AbstractController
 {
@@ -30,46 +30,33 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/create', name: 'app_task_create_form', methods: ['GET'])]
+    #[Route('/task/create', name: 'app_task_create', methods: ['GET', 'POST'])]
     public function createTaskForm(Request $request): Response
-    {
-        $task = new Task();
-        $form = $this->createForm(TaskCreateFormType::class, $task);
-
-        return $this->render('task/create.html.twig', compact('form'));
-    }
-    #[Route('/task/create', name: 'app_task_create', methods: ['POST'])]
-    public function createTask(Request $request): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskCreateFormType::class, $task)->handleRequest($request);
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return $this->render('task/create.html.twig', compact('form'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->taskRepository->add($task, true);
+            $this->addFlash('success', 'Task created!');
+            return $this->redirectToRoute('app_task');
         }
-        $this->taskRepository->add($task, true);
-        $this->addFlash('success', 'Task created!');
-        return $this->redirectToRoute('app_task');
+
+        return $this->render('task/create.html.twig', compact('form'));
     }
 
-    #[Route('/task/edit/{task}', name: 'app_task_edit_form', methods: ['GET'])]
+    #[Route('/task/edit/{task}', name: 'app_task_edit', methods: ['GET', 'PATCH'])]
     public function editTaskForm(Request $request, Task $task): Response
     {
-        $form = $this->createForm(TaskCreateFormType::class, $task, ['method' => 'PATCH']);
-        return $this->render('task/create.html.twig', compact('form', 'task'));
-    }
-
-    #[Route('/task/edit/{task}', name: 'app_task_edit', methods: ['PATCH'])]
-    public function editTask(Request $request, Task $task): Response
-    {
         $form = $this->createForm(TaskCreateFormType::class, $task, ['method' => 'PATCH'])->handleRequest($request);
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return $this->render('task/create.html.twig', compact('form', 'task'));
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->taskRepository->update($task, true);
+            $this->addFlash('success', 'Task updated!');
+            return $this->redirectToRoute('app_task');
         }
 
-        $this->taskRepository->update($task, true);
-        $this->addFlash('success', 'Task updated!');
-        return $this->redirectToRoute('app_task');
+        return $this->render('task/create.html.twig', compact('form', 'task'));
     }
 
     #[Route('/task/delete/{task}', name: 'app_task_delete', methods: ['DELETE'])]

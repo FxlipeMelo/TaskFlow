@@ -29,7 +29,7 @@
                     <a href="{{ path('app_task') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_task' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">📋 My Tasks</a>
                 </li>
                 <li>
-                    <a href="{{ path('app_task_create_form') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_task_create_form' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">➕ New Task</a>
+                    <a href="{{ path('app_task_create') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_task_create' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">➕ New Task</a>
                 </li>
             </ul>
             <ul class="nav nav-pills flex-column gap-1 mb-3">
@@ -104,7 +104,7 @@
                         <a href="{{ path('app_task') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_task_create' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">📋 My Tasks</a>
                     </li>
                     <li>
-                        <a href="{{ path('app_task_create') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_task_create_form' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">➕ New Task</a>
+                        <a href="{{ path('app_task_create') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_task_create' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">➕ New Task</a>
                     </li>
                 </ul>
                 <ul class="nav nav-pills flex-column gap-2 mb-4 mt-4">

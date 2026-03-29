@@ -45,7 +45,7 @@
 
                         <div class="mt-auto pt-3 border-top">
                             <div class="d-flex justify-content-end gap-2">
-                                <a href="{{ path('app_task_edit_form', {task: task.id}) }}" class="btn btn-sm btn-outline-primary px-3">
+                                <a href="{{ path('app_task_edit', {task: task.id}) }}" class="btn btn-sm btn-outline-primary px-3">
                                     Edit
                                 </a>
 
@@ -125,7 +125,7 @@
 
                         <div>
                             <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Close</button>
-                            <a href="{{ path('app_task_edit_form', {task: task.id}) }}" class="btn btn-primary px-4 shadow-sm">Edit Task</a>
+                            <a href="{{ path('app_task_edit', {task: task.id}) }}" class="btn btn-primary px-4 shadow-sm">Edit Task</a>
                         </div>
                     </div>
 

@@ -29,46 +29,33 @@ final class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/category/create', name: 'app_category_create_form', methods: ['GET'])]
+    #[Route('/category/create', name: 'app_category_create', methods: ['GET', 'POST'])]
     public function createCategoryForm(Request $request): Response
-    {
-        $category = new Category();
-        $form = $this->createForm(CategoryCreateFormType::class, $category);
-
-        return $this->render('category/create.html.twig', compact('form'));
-    }
-
-    #[Route('/category/create',  name: 'app_category_create', methods: ['POST'])]
-    public function createCategory(Request $request): Response
     {
         $category = new Category();
         $form = $this->createForm(CategoryCreateFormType::class, $category)->handleRequest($request);
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return  $this->render('category/create.html.twig', compact('form'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->categoryRepository->add($category, true);
+            $this->addFlash("success", "Category created!");
+            return $this->redirectToRoute("app_category");
         }
-        $this->categoryRepository->add($category, true);
-        $this->addFlash("success", "Category created!");
-        return $this->redirectToRoute("app_category");
-    }
 
-    #[Route('/category/edit/{category}', name: 'app_category_edit_form', methods: ['GET'])]
-    public function editCategoryForm(Request $request, Category $category): Response
-    {
-        $form = $this->createForm(CategoryCreateFormType::class, $category, ['method' => 'PATCH']);
         return $this->render('category/create.html.twig', compact('form'));
     }
 
-    #[Route('/category/edit/{category}', name: 'app_category_edit', methods: ['PATCH'])]
-    public function editCategory(Request $request, Category $category): Response
+    #[Route('/category/edit/{category}', name: 'app_category_edit', methods: ['GET', 'PATCH'])]
+    public function editCategoryForm(Request $request, Category $category): Response
     {
         $form = $this->createForm(CategoryCreateFormType::class, $category, ['method' => 'PATCH'])->handleRequest($request);
-        if (!$form->isSubmitted() || !$form->isValid()) {
-                return $this->render('category/create.html.twig', compact('form', 'category'));
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->categoryRepository->update($category, true);
+            $this->addFlash("success", "Category updated!");
+            return $this->redirectToRoute("app_category");
         }
-        $this->categoryRepository->update($category, true);
-        $this->addFlash("success", "Category updated!");
-        return $this->redirectToRoute("app_category");
+
+        return $this->render('category/create.html.twig', compact('form'));
     }
 
     #[Route('/category/delete/{category}', name: 'app_category_delete', methods: ['DELETE'])]

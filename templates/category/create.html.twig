@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} {{ app.request.attributes.get('_route') == 'app_category_create_form' ? 'Create' : 'Edit' }} Category {% endblock %}
+{% block title %} {{ app.request.attributes.get('_route') == 'app_category_create' ? 'Create' : 'Edit' }} Category {% endblock %}
 
 {% block body %}
 <div class="row justify-content-center mt-4">
@@ -8,7 +8,7 @@
 
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
-                <h4 class="mb-0 text-secondary fw-bold">{{ app.request.attributes.get('_route') == 'app_category_create_form' ? 'Create' : 'Edit' }} Category</h4>
+                <h4 class="mb-0 text-secondary fw-bold">{{ app.request.attributes.get('_route') == 'app_category_create' ? 'Create' : 'Edit' }} Category</h4>
             </div>
 
             <div class="card-body p-4">
@@ -18,7 +18,7 @@
                 <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
                     <a href="{{ path('app_category') }}" class="btn btn-light shadow-sm">Cancel</a>
                     <button type="submit" class="btn btn-primary shadow-sm px-4">
-                        {{ app.request.attributes.get('_route') == 'app_category_create_form' ? 'Add Category' : 'Save Changes' }}
+                        {{ app.request.attributes.get('_route') == 'app_category_create' ? 'Add Category' : 'Save Changes' }}
                     </button>
 
                 </div>
