@@ -13,16 +13,14 @@
 
             <div class="card-body p-4">
                 {{ form_start(form) }}
-                    {{ form_row(form.name, {
-                        'label': 'Priority',
-                        'attr': {
-                            'placeholder': 'High, Medium, Low',
-                            'class': 'bg-light'
-                        }
-                    }) }}
+                    {{ form_row(form.name, {'attr': {'class': 'bg-light'}}) }}
+
                 <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
                     <a href="{{ path('app_priority') }}" class="btn btn-light shadow-sm">Cancel</a>
-                    {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary shadow-sm px-4'}}) }}
+                    <button type="submit" class="btn btn-primary shadow-sm px-4">
+                        {{ app.request.attributes.get('_route') == 'app_priority_create_form' ? 'Add Priortity' : 'Save Changes' }}
+                    </button>
+
                 </div>
                 {{ form_end(form) }}
             </div>

@@ -34,7 +34,7 @@ final class TaskController extends AbstractController
     public function createTaskForm(Request $request): Response
     {
         $task = new Task();
-        $form = $this->createForm(TaskCreateFormType::class, $task)->handleRequest($request);
+        $form = $this->createForm(TaskCreateFormType::class, $task);
 
         return $this->render('task/create.html.twig', compact('form'));
     }
@@ -55,14 +55,14 @@ final class TaskController extends AbstractController
     #[Route('/task/edit/{task}', name: 'app_task_edit_form', methods: ['GET'])]
     public function editTaskForm(Request $request, Task $task): Response
     {
-        $form = $this->createForm(TaskCreateFormType::class, $task, ['is_edit' => true])->handleRequest($request);
+        $form = $this->createForm(TaskCreateFormType::class, $task, ['method' => 'PATCH']);
         return $this->render('task/create.html.twig', compact('form', 'task'));
     }
 
     #[Route('/task/edit/{task}', name: 'app_task_edit', methods: ['PATCH'])]
     public function editTask(Request $request, Task $task): Response
     {
-        $form = $this->createForm(TaskCreateFormType::class, $task, ['is_edit' => true])->handleRequest($request);
+        $form = $this->createForm(TaskCreateFormType::class, $task, ['method' => 'PATCH'])->handleRequest($request);
         if (!$form->isSubmitted() || !$form->isValid()) {
             return $this->render('task/create.html.twig', compact('form', 'task'));
         }

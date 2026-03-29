@@ -32,7 +32,7 @@ final class PriorityController extends AbstractController
     public function createPriorityForm(Request $request): Response
     {
         $priority = new Priority();
-        $form = $this->createForm(PriorityCreateFormType::class, $priority)->handleRequest($request);
+        $form = $this->createForm(PriorityCreateFormType::class, $priority);
 
         return $this->render('priority/create.html.twig', compact('form'));
     }
@@ -55,14 +55,14 @@ final class PriorityController extends AbstractController
     #[Route('/priority/edit/{priority}', name: 'app_priority_edit_form', methods: ['GET'])]
     public function editPriorityForm(Request $request, Priority $priority): Response
     {
-        $form = $this->createForm(PriorityCreateFormType::class, $priority, ['is_edit' => true])->handleRequest($request);
+        $form = $this->createForm(PriorityCreateFormType::class, $priority, ['method' => 'PATCH']);
         return $this->render('priority/create.html.twig', compact('form', 'priority'));
     }
 
     #[Route('/priority/edit/{priority}', name: 'app_priority_edit', methods: ['PATCH'])]
     public function editPriority(Request $request, Priority $priority): Response
     {
-        $form = $this->createForm(PriorityCreateFormType::class, $priority, ['is_edit' => true])->handleRequest($request);
+        $form = $this->createForm(PriorityCreateFormType::class, $priority, ['method' => 'PATCH'])->handleRequest($request);
         if (!$form->isSubmitted() || !$form->isValid()) {
             return $this->render('priority/create.html.twig', compact('form', 'priority'));
         }

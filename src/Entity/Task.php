@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
@@ -19,6 +20,9 @@ class Task
     private Category $category;
     #[ORM\ManyToOne(targetEntity: Priority::class, inversedBy: "tasks")]
     private Priority $priority;
+
+    #[ORM\Column(type: types::TEXT, nullable: true)]
+    private ?string $description = null;
     public function __construct()
     {
     }
@@ -62,5 +66,15 @@ class Task
         $this->priority = $priority;
 
         return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 }

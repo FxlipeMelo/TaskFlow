@@ -16,9 +16,13 @@
                     {{ form_row(form.name) }}
                     {{ form_row(form.category) }}
                     {{ form_row(form.priority) }}
+                    {{ form_row(form.description, {'attr': {'class': 'form-control bg-light'}}) }}
                 <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
                     <a href="{{ path('app_task') }}" class="btn btn-light shadow-sm">Cancel</a>
-                    {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary shadow-sm px-4'}}) }}
+                    <button type="submit" class="btn btn-primary shadow-sm px-4">
+                        {{ app.request.attributes.get('_route') == 'app_task_create_form' ? 'Add Task' : 'Save Changes' }}
+                    </button>
+
                 </div>
                 {{ form_end(form) }}
             </div>

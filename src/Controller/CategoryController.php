@@ -55,14 +55,14 @@ final class CategoryController extends AbstractController
     #[Route('/category/edit/{category}', name: 'app_category_edit_form', methods: ['GET'])]
     public function editCategoryForm(Request $request, Category $category): Response
     {
-        $form = $this->createForm(CategoryCreateFormType::class, $category, ['is_edit' => true])->handleRequest($request);
+        $form = $this->createForm(CategoryCreateFormType::class, $category, ['method' => 'PATCH']);
         return $this->render('category/create.html.twig', compact('form'));
     }
 
     #[Route('/category/edit/{category}', name: 'app_category_edit', methods: ['PATCH'])]
     public function editCategory(Request $request, Category $category): Response
     {
-        $form = $this->createForm(CategoryCreateFormType::class, $category, ['is_edit' => true])->handleRequest($request);
+        $form = $this->createForm(CategoryCreateFormType::class, $category, ['method' => 'PATCH'])->handleRequest($request);
         if (!$form->isSubmitted() || !$form->isValid()) {
                 return $this->render('category/create.html.twig', compact('form', 'category'));
         }

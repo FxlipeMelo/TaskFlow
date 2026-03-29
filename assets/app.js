@@ -28,6 +28,19 @@ function startSidebar() {
     }
 }
 
+function cleanUpModalsBeforeCache() {
+    document.querySelectorAll('.modal.show').forEach(modal => {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+    });
+
+    document.querySelectorAll('.modal-backdrop, .offcanvas-backdrop').forEach(el => el.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('padding-right');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     startToasts();
     startSidebar();
@@ -37,5 +50,7 @@ document.addEventListener('turbo:load', () => {
     startToasts();
     startSidebar();
 });
+
+document.addEventListener('turbo:before-cache', cleanUpModalsBeforeCache);
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

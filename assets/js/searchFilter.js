@@ -1,19 +1,20 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('turbo:load', function() {
+
     const searchInput = document.getElementById('searchInput');
+    const taskItems = document.querySelectorAll('.task-item'); // Lembre-se que você colocou essa classe na div da coluna!
 
     if (searchInput) {
-        const taskCards = document.querySelectorAll('.col-12.col-md-6.col-lg-4');
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
 
-        searchInput.addEventListener('input', function () {
-            const searchQuery = searchInput.value.toLowerCase();
+            taskItems.forEach(function(item) {
+                const title = item.querySelector('.card-title').textContent.toLowerCase();
+                const category = item.querySelector('.card-subtitle').textContent.toLowerCase();
 
-            taskCards.forEach(function (card) {
-                const taskTitle = card.querySelector('.card-title').textContent.toLowerCase();
-
-                if (taskTitle.includes(searchQuery)) {
-                    card.style.display = '';
+                if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                    item.style.display = '';
                 } else {
-                    card.style.display = 'none';
+                    item.style.display = 'none';
                 }
             });
         });
