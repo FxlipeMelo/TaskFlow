@@ -30,7 +30,7 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/category/create', name: 'app_category_create', methods: ['GET', 'POST'])]
-    public function createCategoryForm(Request $request): Response
+    public function createCategory(Request $request): Response
     {
         $category = new Category();
         $form = $this->createForm(CategoryCreateFormType::class, $category)->handleRequest($request);
@@ -45,7 +45,7 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/category/edit/{category}', name: 'app_category_edit', methods: ['GET', 'PATCH'])]
-    public function editCategoryForm(Request $request, Category $category): Response
+    public function editCategory(Request $request, Category $category): Response
     {
         $form = $this->createForm(CategoryCreateFormType::class, $category, ['method' => 'PATCH'])->handleRequest($request);
 
@@ -61,8 +61,13 @@ final class CategoryController extends AbstractController
     #[Route('/category/delete/{category}', name: 'app_category_delete', methods: ['DELETE'])]
     public function deleteCategory(Request $request, Category $category): Response
     {
-        $this->categoryRepository->remove($category, true);
-        $this->addFlash("success", "Category deleted!");
+        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
+            $this->categoryRepository->remove($category, true);
+            $this->addFlash("success", "Category deleted!");
+        } else {
+            $this->addFlash('danger', 'Security error: Invalid CSRF token.');
+        }
+
         return $this->redirectToRoute("app_category");
     }
 }

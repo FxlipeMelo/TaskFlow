@@ -1,47 +1,83 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        <style>
-            {{ inline_css|raw }}
-            /body { background-color: #FFFFFF; padding: 20px }
-        </style>
-    </head>
+{% extends 'base.html.twig' %}
 
-    <body>
-    <h2>Task List</h2>
-    <table class="table">
-        <caption>Lista de tarefas</caption>
-        <thead>
-        <tr>
-            <th>id</th>
-            <th scope="col">Task</th>
-            <th scope="col">Category</th>
-            <th scope="col">Priority</th>
-        </tr>
-        </thead>
-        <tbody>
-            {% for task in taskList %}
-            {% set row_class = '' %}
-            {% if task.priority%}
-                {% if task.priority.id == 1 %}
-                    {% set row_class = 'table-success' %}
-                {% elseif(task.priority.id == 2) %}
-                    {% set row_class = 'table-warning' %}
-                {% else %}
-                    {% set row_class = 'table-danger' %}
-                {% endif %}
-            {% endif %}
+{% block title %}Reports & Analytics{% endblock %}
 
-            <tr class="{{ row_class }}">
-                <th scope="row">{{ task.id }}</th>
-                <td>{{ task.name }}</td>
-                <td>{{ task.category }}</td>
-                <td>{{ task.priority }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </body>
-</html>
+{% block body %}
+    {# Cabeçalho da Página #}
+    <div class="mb-4">
+        <h2 class="h3 text-secondary fw-bold mb-0">Reports & Analytics</h2>
+        <p class="text-muted small">Export your data and track your productivity.</p>
+    </div>
+
+    {# 1. O CARD DE FILTROS E EXPORTAÇÃO #}
+    <div class="card border-0 shadow-sm mb-5">
+        <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+            <h5 class="fw-bold text-secondary mb-0">Export Task Report</h5>
+        </div>
+        <div class="card-body p-4">
+
+            {# Formulário puramente visual para alinhar os campos #}
+            <form action="{{ path('app_task_report_download') }}" class="row g-3 align-items-end" method="GET" target="_blank">
+
+                {# Campo de Data Inicial #}
+                <div class="col-12 col-md-4">
+                    <label class="form-label text-muted small fw-bold text-uppercase">Start Date</label>
+                    <input type="date" class="form-control form-control-lg bg-light border-0">
+                </div>
+
+                {# Campo de Data Final #}
+                <div class="col-12 col-md-4">
+                    <label class="form-label text-muted small fw-bold text-uppercase">End Date</label>
+                    <input type="date" class="form-control form-control-lg bg-light border-0">
+                </div>
+
+                {# Botão de Gerar PDF #}
+                <div class="col-12 col-md-4">
+                    <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                        {# Ícone de PDF do Bootstrap #}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-pdf-fill" viewBox="0 0 16 16">
+                            <path d="M5.523 12.424c.14-.082.293-.162.459-.238a7.878 7.878 0 0 1-.45.606c-.28.337-.498.516-.635.572a.266.266 0 0 1-.035.012.282.282 0 0 1-.026-.044c-.056-.11-.054-.216.04-.36.106-.165.319-.354.647-.548zm2.455-1.647c-.119.025-.237.05-.356.078a21.148 21.148 0 0 0 .5-1.05 12.045 12.045 0 0 0 .51.858c-.217.032-.436.07-.654.114zm2.525.939a3.881 3.881 0 0 1-.435-.41c.228.005.434.022.612.054.317.057.466.147.518.209a.095.095 0 0 1 .026.064.436.436 0 0 1-.06.2.307.307 0 0 1-.094.124.107.107 0 0 1-.069.015c-.09-.003-.258-.066-.498-.256zM8.278 6.97c-.04.244-.108.524-.2.829a4.86 4.86 0 0 1-.089-.346c-.076-.353-.087-.73-.04-.96.051-.251.146-.316.25-.316.095 0 .165.07.179.193.015.132-.012.35-.1.604zm.09 3.493a11.332 11.332 0 0 1-.22-.381 9.387 9.387 0 0 1-.303-.591 10.61 10.61 0 0 1-.233-.506c-.057-.147-.11-.3-.159-.449a3.172 3.172 0 0 0-.17-.468c-.02-.046-.039-.089-.057-.13-.058-.135-.11-.271-.16-.407-.06-.16-.113-.322-.162-.482-.054-.18-.1-.362-.143-.544-.067-.282-.122-.56-.161-.82-.038-.254-.055-.494-.047-.714.009-.235.048-.445.109-.619.06-.17.14-.309.233-.404.093-.095.203-.153.33-.162.13-.01.27.027.418.093.15.068.303.17.447.299.146.13.282.288.406.467.124.178.235.378.332.593.097.214.178.441.242.673.064.232.11.472.139.712.03.24.04.482.029.718-.01.235-.043.465-.098.683-.056.216-.134.42-.234.606-.098.183-.222.348-.369.487-.146.138-.32.247-.523.315-.205.069-.441.106-.708.113zm-3.058 1.54c-.167.31-.284.604-.339.85-.053.243-.051.45.011.597.062.146.166.24.316.27.152.031.341.002.553-.082.21-.082.433-.217.658-.396.223-.178.444-.396.653-.642.21-.246.406-.514.582-.796.175-.281.332-.57.466-.856.135-.286.248-.567.339-.838.09-.271.16-.527.208-.763.048-.235.076-.445.086-.622.01-.176.002-.321-.025-.433-.027-.112-.073-.189-.136-.234-.063-.045-.144-.062-.24-.05a.736.736 0 0 0-.323.146c-.097.078-.18.175-.246.284-.065.108-.113.226-.145.347-.03.12-.043.24-.038.355.004.115.027.225.068.324.041.1.1.189.176.262.076.074.17.13.28.163zm7.04-1.879c-.274-.085-.59-.136-.94-.148a7.807 7.807 0 0 0-1.162.06c.196.208.384.436.56.68.176.243.34.498.489.756.148.257.279.51.39.752.111.242.2.468.266.671.066.203.11.385.132.54.022.155.022.286 0 .39-.02.103-.06.183-.119.234-.058.051-.137.075-.236.07-.098-.005-.216-.038-.352-.102-.136-.063-.29-.158-.456-.282-.167-.123-.346-.275-.533-.45a9.423 9.423 0 0 1-1.01-1.127 8.766 8.766 0 0 1-.77-1.171 7.828 7.828 0 0 1-.502-1.036c-.156-.4-.28-.802-.37-1.19a4.872 4.872 0 0 1-.122-1.077c-.012-.34.004-.668.05-.975.045-.308.115-.595.21-.854.093-.258.21-.486.353-.675.143-.189.31-.341.5-.445.19-.104.403-.162.637-.168.234-.006.49.035.76.12.27.085.556.21.848.371.293.161.59.352.88.567.29.215.572.45.83.699.257.248.498.508.71.77.21.261.396.52.545.764.15.244.267.469.345.66.079.19.124.35.132.466.008.116-.016.202-.07.247-.054.045-.136.059-.245.038a.728.728 0 0 1-.321-.164c-.093-.092-.169-.204-.223-.326-.053-.122-.085-.251-.094-.377a1.056 1.056 0 0 1 .018-.363c.026-.11.07-.206.132-.276z"/>
+                        </svg>
+                        Download PDF
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    {# 2. O FUTURO: PLACEHOLDERS DE GRÁFICOS #}
+    <div class="mt-5">
+        <h5 class="fw-bold text-secondary mb-3">Overview</h5>
+        <div class="row g-4">
+
+            {# Card Vazio 1 #}
+            <div class="col-12 col-md-4">
+                <div class="card border-0 bg-white shadow-sm h-100 p-4 text-center rounded-4" style="border: 2px dashed #dee2e6 !important;">
+                    <div class="text-muted mb-2 fs-1">📊</div>
+                    <h6 class="text-secondary fw-bold">Completion Rate</h6>
+                    <p class="text-muted small mb-0">Charts coming soon...</p>
+                </div>
+            </div>
+
+            {# Card Vazio 2 #}
+            <div class="col-12 col-md-4">
+                <div class="card border-0 bg-white shadow-sm h-100 p-4 text-center rounded-4" style="border: 2px dashed #dee2e6 !important;">
+                    <div class="text-muted mb-2 fs-1">📈</div>
+                    <h6 class="text-secondary fw-bold">Tasks by Category</h6>
+                    <p class="text-muted small mb-0">Charts coming soon...</p>
+                </div>
+            </div>
+
+            {# Card Vazio 3 #}
+            <div class="col-12 col-md-4">
+                <div class="card border-0 bg-white shadow-sm h-100 p-4 text-center rounded-4" style="border: 2px dashed #dee2e6 !important;">
+                    <div class="text-muted mb-2 fs-1">🔥</div>
+                    <h6 class="text-secondary fw-bold">Productivity Streak</h6>
+                    <p class="text-muted small mb-0">Charts coming soon...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

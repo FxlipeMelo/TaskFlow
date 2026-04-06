@@ -29,7 +29,7 @@ final class PriorityController extends AbstractController
     }
 
     #[Route('/priority/create', name: 'app_priority_create', methods: ['GET', 'POST'])]
-    public function createPriorityForm(Request $request): Response
+    public function createPriority(Request $request): Response
     {
         $priority = new Priority();
         $form = $this->createForm(PriorityCreateFormType::class, $priority)->handleRequest($request);
@@ -44,7 +44,7 @@ final class PriorityController extends AbstractController
     }
 
     #[Route('/priority/edit/{priority}', name: 'app_priority_edit', methods: ['GET', 'PATCH'])]
-    public function editPriorityForm(Request $request, Priority $priority): Response
+    public function editPriority(Request $request, Priority $priority): Response
     {
         $form = $this->createForm(PriorityCreateFormType::class, $priority, ['method' => 'PATCH'])->handleRequest($request);
 
@@ -60,8 +60,13 @@ final class PriorityController extends AbstractController
     #[Route('/priority/delete/{priority}', name: 'app_priority_delete', methods: ['DELETE'])]
     public function deletePriority(Request $request, Priority $priority): Response
     {
-        $this->priorityRepository->remove($priority, true);
-        $this->addFlash('success', 'Priority deleted!');
+        if ($this->isCsrfTokenValid('delete'.$priority->getId(), $request->request->get('_token'))) {
+            $this->priorityRepository->remove($priority, true);
+            $this->addFlash('success', 'Priority deleted!');
+        } else {
+            $this->addFlash('danger', 'Security error: Invalid CSRF token.');
+        }
+
         return $this->redirectToRoute('app_priority');
     }
 }

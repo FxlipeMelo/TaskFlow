@@ -1,17 +1,18 @@
 document.addEventListener('turbo:load', function() {
 
     const searchInput = document.getElementById('searchInput');
-    const taskItems = document.querySelectorAll('.task-item'); // Lembre-se que você colocou essa classe na div da coluna!
+    const items = document.querySelectorAll('.task-item, tbody tr');
 
     if (searchInput) {
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
 
-            taskItems.forEach(function(item) {
-                const title = item.querySelector('.card-title').textContent.toLowerCase();
-                const category = item.querySelector('.card-subtitle').textContent.toLowerCase();
+            items.forEach(function(item) {
 
-                if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                if (item.querySelector('td[colspan]')) return;
+                const content = item.textContent.toLowerCase();
+
+                if (content.includes(searchTerm)) {
                     item.style.display = '';
                 } else {
                     item.style.display = 'none';

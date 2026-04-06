@@ -73,6 +73,7 @@
 
                             <form method="post" action="{{ path('app_category_delete', {category: category.id}) }}">
                                 <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
                                 <button type="submit" class="btn btn-danger px-4 shadow-sm">Yes, delete</button>
                             </form>
                         </div>

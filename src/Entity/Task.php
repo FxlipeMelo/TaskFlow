@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\TaskStatus;
 use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,8 +24,20 @@ class Task
 
     #[ORM\Column(type: types::TEXT, nullable: true)]
     private ?string $description = null;
+
+    #[ORM\Column(type: types::DATETIME_IMMUTABLE)]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $finishedAt = null;
+
+    #[ORM\Column(length: 255, enumType: TaskStatus::class)]
+    private ?TaskStatus $status = null;
+
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->status = TaskStatus::OPEN;
     }
 
     public function getId(): int
@@ -77,4 +90,35 @@ class Task
     {
         $this->description = $description;
     }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getFinishedAt(): ?\DateTimeImmutable
+    {
+        return $this->finishedAt;
+    }
+
+    public function setFinishedAt(\DateTimeImmutable $finishedAt): void
+    {
+        $this->finishedAt = $finishedAt;
+    }
+
+    public function getStatus(): ?TaskStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?TaskStatus $status): void
+    {
+        $this->status = $status;
+    }
+
 }
