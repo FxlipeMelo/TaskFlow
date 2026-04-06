@@ -31,6 +31,9 @@ class Task
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $finishedAt = null;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $deletedAt = null;
+
     #[ORM\Column(length: 255, enumType: TaskStatus::class)]
     private ?TaskStatus $status = null;
 
@@ -119,6 +122,28 @@ class Task
     public function setStatus(?TaskStatus $status): void
     {
         $this->status = $status;
+    }
+
+    public function getDeletedAt(): ?\DateTimeImmutable
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeImmutable $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    public function markAsFinished(): void
+    {
+        $this->finishedAt = new \DateTimeImmutable();
+        $this->status = TaskStatus::FINISHED;
+    }
+
+    public function markAsDeleted(): void
+    {
+        $this->deletedAt = new \DateTimeImmutable();
+        $this->status = TaskStatus::DELETED;
     }
 
 }

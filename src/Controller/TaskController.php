@@ -62,8 +62,14 @@ final class TaskController extends AbstractController
     #[Route('/task/delete/{task}', name: 'app_task_delete', methods: ['DELETE'])]
     public function deleteTask(Request $request, Task $task): Response
     {
+        if ($task->getDeletedAt() !== null) {
+            $this->addFlash('warning', 'This task is already deleted!');
+            return $this->redirectToRoute('app_task');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->request->get('_token'))) {
-            $this->taskRepository->delete($task, true);
+            $task->markAsDeleted();
+            $this->taskRepository->update($task, true);
             $this->addFlash('success', 'Task deleted!');
         } else {
             $this->addFlash('danger', 'Security error: Invalid CSRF token.');
@@ -87,8 +93,7 @@ final class TaskController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('finished'.$task->getId(), $request->request->get('_token'))) {
-            $task->setFinishedAt(new \DateTimeImmutable());
-            $task->setStatus(TaskStatus::FINISHED);
+            $task->markAsFinished();
             $this->taskRepository->update($task, true);
             $this->addFlash('success', 'Task finished!');
         } else {
