@@ -23,7 +23,7 @@ final class TaskController extends AbstractController
     #[Route('/task', name: 'app_task', methods: ['GET'])]
     public function taskList(): Response
     {
-        $taskList = $this->taskRepository->findBy(['status' => TaskStatus::OPEN], ['createdAt' => 'DESC']);
+        $taskList = $this->taskRepository->findBy(['status' => TaskStatus::OPEN], ['createdAt' => 'ASC']);
 
         return $this->render('task/index.html.twig', [
             'taskList' => $taskList
@@ -75,7 +75,7 @@ final class TaskController extends AbstractController
     #[Route('task/history', name:'app_task_history', methods: ['GET'])]
     public function taskHistory(Request $request): Response
     {
-        $taskList = $this->taskRepository->findBy(['status' => TaskStatus::FINISHED], ['createdAt' => 'DESC']);
+        $taskList = $this->taskRepository->findBy(['status' => TaskStatus::FINISHED], ['createdAt' => 'ASC']);
         return $this->render('task/history.html.twig', compact('taskList'));
     }
 
@@ -98,8 +98,6 @@ final class TaskController extends AbstractController
         return $this->redirectToRoute('app_task');
     }
 
-    #[Route('/task/')]
-
     #[Route('/task/report', name: 'app_task_report', methods: ['GET'])]
     public function taskReport(Request $request): Response {
         return $this->render('task/report.html.twig', []);
@@ -108,7 +106,15 @@ final class TaskController extends AbstractController
     #[Route('/task/report/download', name: 'app_task_report_download', methods: ['GET'])]
     public function taskReportDownload(Request $request): Response
     {
-        $taskList = $this->taskRepository->findAll();
+        $statusRequest = $request->query->get('status');
+        $dateStartRequest = $request->query->get('startDate');
+        $dateEndRequest = $request->query->get('endDate');
+
+        $status = $statusRequest ? TaskStatus::tryFrom($statusRequest) : null;
+        $dateStart = $dateStartRequest ? new \DateTimeImmutable($dateStartRequest) : null;
+        $dateEnd = $dateEndRequest ? new \DateTimeImmutable($dateEndRequest . ' 23:59:59') : null;
+
+        $taskList = $this->taskRepository->findTasks($status, $dateStart, $dateEnd);
         $manifestPath = $this->getParameter('kernel.project_dir') . '/public/build/manifest.json';
         $cssContent = '';
         if (file_exists($manifestPath)) {
@@ -123,7 +129,11 @@ final class TaskController extends AbstractController
         }
         $html = $this->renderView('task/reportDownload.html.twig', [
             'taskList' => $taskList,
-            'inline_css' => $cssContent
+            'inline_css' => $cssContent,
+            'filterStatus' => $status,
+            'filterDateStart' => $dateStart,
+            'filterDateEnd' => $dateEnd,
+            'generatedAt' => new \DateTimeImmutable()
         ]);
         $pdf = Browsershot::html($html)->format('A4')->margins(10,10,10,10)->showBackground()->pdf();
 

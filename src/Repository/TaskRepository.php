@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Task;
+use App\Enum\TaskStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -44,6 +45,29 @@ class TaskRepository extends ServiceEntityRepository
 
     }
 
+    public function findTasks(?TaskStatus $status, ?\DateTimeImmutable $startDate, ?\DateTimeImmutable $endDate): array
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        $dateColumn = ($status === TaskStatus::FINISHED) ? 't.finishedAt' : 't.createdAt';
+
+        if ($status !== null) {
+            $qb->andWhere('t.status = :status')
+                ->setParameter('status', $status);
+        }
+
+        if ($startDate !== null) {
+            $qb->andWhere($dateColumn . ' >= :startDate')->setParameter('startDate', $startDate);
+        }
+
+        if ($endDate !== null) {
+            $qb->andWhere($dateColumn . ' <= :endDate')->setParameter('endDate', $endDate);
+        }
+
+        $qb->orderBy($dateColumn, 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
     //    /**
     //     * @return Task[] Returns an array of Task objects
     //     */
