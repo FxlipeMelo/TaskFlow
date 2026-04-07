@@ -59,10 +59,12 @@
                         Only Open Tasks
                     {% elseif filterStatus.value == 'finished' %}
                         Only Finished Tasks
+                    {% elseif filterStatus.value == 'deleted' %}
+                        Only Deleted Tasks
                     {% endif%}
 
                 {% else %}
-                    All Tasks (Open & Finished)
+                    All Tasks (Open, Finished & Deleted)
                 {% endif %}
             </strong>
         </div>

@@ -49,7 +49,11 @@ class TaskRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('t');
 
-        $dateColumn = ($status === TaskStatus::FINISHED) ? 't.finishedAt' : 't.createdAt';
+        $dateColumn = match ($status) {
+            TaskStatus::FINISHED => 't.finishedAt',
+            TaskStatus::DELETED => 't.deletedAt',
+            default => 't.createdAt',
+        };
 
         if ($status !== null) {
             $qb->andWhere('t.status = :status')
