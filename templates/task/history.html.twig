@@ -52,9 +52,13 @@
                                 </span>
                             </td>
                             <td class="text-end align-middle">
-                                <button type="button" class="btn btn-sm btn-outline-danger px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ task.id }}">
-                                    Delete
-                                </button>
+                                <form method="post" action="{{ path('app_task_restore', {task: task.id}) }}">
+                                    <input type="hidden" name="_method" value="PATCH">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('restore' ~ task.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-success px-3 shadow-sm" title="Restore to Open">
+                                        Restore
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     {% else %}
@@ -75,35 +79,6 @@
 {% block modals %}
     {% for task in taskList %}
 
-        {# Modal de Delete #}
-        <div class="modal fade" id="deleteModal-{{ task.id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ task.id }}" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 shadow-lg">
-
-                    <div class="modal-header bg-danger text-white border-0">
-                        <h5 class="modal-title fw-bold" id="deleteModalLabel-{{ task.id }}">Confirm Deletion</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body fs-6 py-4">
-                        Are you sure you want to permanently delete the task <strong>"{{ task.name }}"</strong> from the history? <br>
-                        <span class="text-muted small">This action cannot be undone.</span>
-                    </div>
-
-                    <div class="modal-footer bg-light border-0">
-                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Cancel</button>
-
-                        <form method="post" action="{{ path('app_task_delete', {task: task.id}) }}">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
-                            <button type="submit" class="btn btn-danger px-4 shadow-sm">Yes, delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {# Modal #}
         <div class="modal fade" id="viewModal-{{ task.id }}" tabindex="-1" aria-labelledby="viewModalLabel-{{ task.id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content border-0 shadow-lg">

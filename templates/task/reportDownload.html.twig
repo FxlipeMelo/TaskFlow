@@ -102,6 +102,8 @@
             <td class="align-middle text-muted small">
                 {% if task.status.name == 'FINISHED' %}
                     Finished: {{ task.finishedAt ? task.finishedAt|date('Y-m-d H:i') : '-' }}
+                {% elseif task.status.name == 'DELETED'%}
+                    Deleted: {{ task.deletedAt ? task.deletedAt|date('Y-m-d H:i') : '-' }}
                 {% else %}
                     Created: {{ task.createdAt ? task.createdAt|date('Y-m-d H:i') : '-' }}
                 {% endif %}
@@ -109,6 +111,8 @@
             <td class="align-middle text-center">
                 {% if task.status.name == 'FINISHED' %}
                     <span style="color: #198754; font-weight: bold;">FINISHED</span>
+                {% elseif task.status.name == 'DELETED'%}
+                    <span style="color: #dc3545; font-weight: bold;">DELETED</span>
                 {% else %}
                     <span style="color: #0d6efd; font-weight: bold;">OPEN</span>
                 {% endif %}

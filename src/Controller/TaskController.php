@@ -78,7 +78,7 @@ final class TaskController extends AbstractController
         return $this->redirectToRoute('app_task');
     }
 
-    #[Route('task/history', name:'app_task_history', methods: ['GET'])]
+    #[Route('/task/history', name:'app_task_history', methods: ['GET'])]
     public function taskHistory(Request $request): Response
     {
         $taskList = $this->taskRepository->findBy(['status' => TaskStatus::FINISHED], ['createdAt' => 'ASC']);
@@ -86,7 +86,8 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task/finished/{task}', name: 'app_task_finished', methods: ['PATCH'])]
-    public function taskFinished(Request $request, Task $task): Response {
+    public function taskFinished(Request $request, Task $task): Response
+    {
         if ($task->getFinishedAt() !== null) {
             $this->addFlash('warning', 'This task is already finished!');
             return $this->redirectToRoute('app_task');
@@ -104,7 +105,8 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task/report', name: 'app_task_report', methods: ['GET'])]
-    public function taskReport(Request $request): Response {
+    public function taskReport(Request $request): Response
+    {
         return $this->render('task/report.html.twig', []);
     }
 
@@ -146,5 +148,36 @@ final class TaskController extends AbstractController
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="task.pdf"'
         ]);
+    }
+
+    #[Route('/task/trash', name: 'app_task_trash', methods: ['GET'])]
+    public function taskTrash(Request $request): Response
+    {
+        $taskList = $this->taskRepository->findBy(['status' => TaskStatus::DELETED], ['createdAt' => 'ASC']);
+
+        return $this->render('task/trash.html.twig', compact('taskList'));
+    }
+
+    #[Route('/task/restore/{task}', name: 'app_task_restore', methods: ['PATCH'])]
+    public function taskRestore(Request $request, Task $task): Response
+    {
+        if ($this->isCsrfTokenValid('restore'.$task->getId(), $request->request->get('_token'))) {
+            $task->reopen();
+            $this->taskRepository->update($task, true);
+        }
+
+        $referer = $request->headers->get('referer');
+
+        return $this->redirect($referer ?? $this->generateUrl('app_task'));
+    }
+
+    #[Route('/task/hardDelete/{task}', name: 'app_task_hard_delete', methods: ['DELETE'])]
+    public function taskHardDelete(Request $request, Task $task): Response
+    {
+        if ($this->isCsrfTokenValid('hard_delete'.$task->getId(), $request->request->get('_token'))) {
+            $this->taskRepository->delete($task, true);
+        }
+
+        return $this->redirectToRoute('app_task_trash');
     }
 }

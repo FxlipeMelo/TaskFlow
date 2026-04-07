@@ -37,6 +37,9 @@
                 <li>
                     <a href="{{ path('app_task_report') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_task_report' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">Report</a>
                 </li>
+                <li>
+                    <a href="{{ path('app_task_trash') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_task_trash' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">Trash</a>
+                </li>
             </ul>
             <ul class="nav nav-pills flex-column gap-1 mb-3">
                 <li class="mt-3 mb-1">

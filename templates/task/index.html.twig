@@ -43,8 +43,15 @@
                             {{ task.category }}
                         </h6>
 
-                        <div class="mt-auto pt-3 border-top">
-                            <div class="d-flex justify-content-end gap-2">
+                        <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+
+                                <button type="button" class="btn btn-sm btn-outline-danger shadow-sm px-2" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ task.id }}" title="Move to Trash">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                                    </svg>
+                                </button>
+
+                            <div class="d-flex gap-2">
                                 <a href="{{ path('app_task_edit', {task: task.id}) }}" class="btn btn-sm btn-outline-primary px-3">
                                     Edit
                                 </a>
@@ -55,6 +62,7 @@
                                     <button type="submit" class="btn btn-sm btn-success px-3 shadow-sm">Finished</button>
                                 </form>
                             </div>
+
                         </div>
 
                     </div>
@@ -71,16 +79,44 @@
 
 
 {# Estacionamento de Modais isolado do grid principal #}
-
 {% block modals %}
     {% for task in taskList %}
+
+        {# Modal de Delete #}
+        <div class="modal fade" id="deleteModal-{{ task.id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ task.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+
+                    <div class="modal-header bg-danger text-white border-0">
+                        <h5 class="modal-title fw-bold" id="deleteModalLabel-{{ task.id }}">Move to trash</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body fs-6 py-4">
+                        Are you sure you want to move the task <strong>"{{ task.name }}"</strong> to the trash? <br>
+                        <span class="text-muted small">You can restore it later from the Trash menu.</span>
+                    </div>
+
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Cancel</button>
+
+                        <form method="post" action="{{ path('app_task_delete', {task: task.id}) }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+                            <button type="submit" class="btn btn-danger px-4 shadow-sm">Move to trash</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {# Modal de Descrição #}
         <div class="modal fade" id="viewModal-{{ task.id }}" tabindex="-1" aria-labelledby="viewModalLabel-{{ task.id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content border-0 shadow-lg">
 
                     <div class="modal-header bg-light border-bottom-0 pt-4 px-4">
-                        <h4 class="modal-title fw-bold text-dark" id="viewModalLabel-{{ task.id }}">s
+                        <h4 class="modal-title fw-bold text-dark" id="viewModalLabel-{{ task.id }}">
                             {{ task.name }}
                         </h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

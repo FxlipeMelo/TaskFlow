@@ -22,10 +22,10 @@ class Task
     #[ORM\ManyToOne(targetEntity: Priority::class, inversedBy: "tasks")]
     private Priority $priority;
 
-    #[ORM\Column(type: types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
@@ -144,6 +144,18 @@ class Task
     {
         $this->deletedAt = new \DateTimeImmutable();
         $this->status = TaskStatus::DELETED;
+    }
+
+    public function reopen(): void
+    {
+        if ($this->deletedAt !== null) {
+            $this->deletedAt = null;
+
+        } else {
+            $this->finishedAt = null;
+        }
+
+        $this->status = TaskStatus::OPEN;
     }
 
 }
