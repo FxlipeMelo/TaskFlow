@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Set New Password{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-sm border-0 mt-5">
+                    <div class="card-body p-5">
+
+                        <div class="text-center mb-4">
+                            <div class="text-primary mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-shield-lock" viewBox="0 0 16 16">
+                                    <path d="M5.338 1.59a59.768 59.768 0 0 0-2.836.856.809.809 0 0 0-.582.777l-.09 8.225c-.064 5.922 5.176 9.605 5.518 9.83a.597.597 0 0 0 .584 0c.342-.225 5.582-3.908 5.518-9.83l-.09-8.225a.809.809 0 0 0-.582-.777 59.768 59.768 0 0 0-2.836-.856 10.599 10.599 0 0 0-3.15-.443c-1.077 0-2.148.15-3.15.443zM8 11.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM8 10a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                                </svg>
+                            </div>
+                            <h2 class="fw-bold">Set New Password</h2>
+                            <p class="text-muted">
+                                Please enter your new password below. Make sure it's strong and secure.
+                            </p>
+                        </div>
+
+                        {{ form_start(resetForm) }}
+
+                        <div class="mb-4 text-start">
+                            {{ form_row(resetForm.plainPassword) }}
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Update Password
+                            </button>
+                        </div>
+
+                        {{ form_end(resetForm) }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -19,6 +19,8 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            user_checker:
+                App\Security\UserChecker
             form_login:
                 login_path: app_login
                 check_path: app_login
@@ -38,7 +40,7 @@ security:
     # Note: Only the *first* matching rule is applied
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/(?!login|register), roles: ROLE_USER }
+        - { path: ^/(?!login|register|forgot-password|check-email|reset-password|verify/email), roles: ROLE_USER }
 
 when@test:
     security:

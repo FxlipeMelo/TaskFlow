@@ -14,6 +14,26 @@
                 {{ form_errors(registrationForm) }}
 
                 {{ form_start(registrationForm) }}
+
+                <div class="row mb-3">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        {{ form_row(registrationForm.firstName, {
+                            label_attr: {'class': 'form-label text-secondary fw-semibold small'},
+                            attr: {
+                                'class': 'form-control form-control-lg bg-light'
+                            }
+                        }) }}
+                    </div>
+                    <div class="col-sm-6">
+                        {{ form_row(registrationForm.lastName, {
+                            label_attr: {'class': 'form-label text-secondary fw-semibold small'},
+                            attr: {
+                                'class': 'form-control form-control-lg bg-light'
+                            }
+                        }) }}
+                    </div>
+                </div>
+
                 <div class="mb-3">
                     {{ form_row(registrationForm.email, {
                         'label_attr': {'class': 'form-label text-secondary fw-semibold small'},
@@ -28,6 +48,7 @@
                         }
                     }) }}
                 </div>
+
 
                 <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">Register</button>
                 {{ form_end(registrationForm) }}

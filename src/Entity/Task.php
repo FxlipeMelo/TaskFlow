@@ -37,6 +37,9 @@ class Task
     #[ORM\Column(length: 255, enumType: TaskStatus::class)]
     private ?TaskStatus $status = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
+    private User $user;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -156,6 +159,16 @@ class Task
         }
 
         $this->status = TaskStatus::OPEN;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
     }
 
 }

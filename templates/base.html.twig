@@ -46,6 +46,9 @@
                     <span class="text-white-50 small fw-bold px-3 text-uppercase" style="letter-spacing: 0.05em;">Settings</span>
                 </li>
                 <li>
+                    <a href="{{ path('app_user') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_user' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">Team</a>
+                </li>
+                <li>
                     <a href="{{ path('app_priority') }}" class="nav-link {{ app.request.attributes.get('_route') == 'app_priority' ? 'active bg-primary text-white' : 'text-white opacity-75 custom-hover' }}">Priority</a>
                 </li>
                 <li>

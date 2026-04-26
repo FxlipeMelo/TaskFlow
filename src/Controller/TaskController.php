@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Enum\TaskStatus;
 use App\Form\TaskCreateFormType;
 use App\Repository\TaskRepository;
@@ -33,7 +34,14 @@ final class TaskController extends AbstractController
     #[Route('/task/create', name: 'app_task_create', methods: ['GET', 'POST'])]
     public function createTask(Request $request): Response
     {
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('You must be logged in to create tasks.');
+        }
+
         $task = new Task();
+        $task->setUser($user);
         $form = $this->createForm(TaskCreateFormType::class, $task)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

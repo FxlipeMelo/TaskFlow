@@ -28,6 +28,38 @@ function startSidebar() {
     }
 }
 
+function autoOpenModal() {
+    console.log('1. Iniciando verificação do modal auto-open...');
+    const autoOpenElement = document.getElementById('modal-auto-open');
+
+    if (autoOpenElement && autoOpenElement.dataset.targetId !== '') {
+        const modalId = autoOpenElement.dataset.targetId;
+        console.log('2. ID encontrado na div mensageira:', modalId);
+
+        const modalToOpen = document.getElementById(modalId);
+        console.log('3. Elemento Modal encontrado no HTML:', modalToOpen);
+
+        if (modalToOpen) {
+            console.log('4. Limpando lixo fantasma do Bootstrap antigo...');
+
+            // O SEGREDO DO TURBO: Limpa os rastros do modal anterior antes de abrir o novo
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+
+            setTimeout(() => {
+                console.log('5. Executando o show() do Bootstrap no novo modal...');
+                // getOrCreateInstance evita duplicação de eventos na memória
+                const myModal = bootstrap.Modal.getOrCreateInstance(modalToOpen);
+                myModal.show();
+            }, 100); // Subi o respiro de 50 para 100ms para garantir a renderização
+        }
+    } else {
+        console.log('-> Nenhum modal com erro para abrir nesta tela.');
+    }
+}
+
 function cleanUpModalsBeforeCache() {
     document.querySelectorAll('.modal.show').forEach(modal => {
         modal.classList.remove('show');
@@ -44,11 +76,13 @@ function cleanUpModalsBeforeCache() {
 document.addEventListener('DOMContentLoaded', () => {
     startToasts();
     startSidebar();
+    autoOpenModal();
 });
 
 document.addEventListener('turbo:load', () => {
     startToasts();
     startSidebar();
+    autoOpenModal();
 });
 
 document.addEventListener('turbo:before-cache', cleanUpModalsBeforeCache);
