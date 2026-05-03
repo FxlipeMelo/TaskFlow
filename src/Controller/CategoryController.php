@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Form\CategoryCreateFormType;
 use App\Repository\CategoryRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class CategoryController extends AbstractController
 {
@@ -30,6 +30,7 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/category/create', name: 'app_category_create', methods: ['GET', 'POST'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function createCategory(Request $request): Response
     {
         $category = new Category();
@@ -45,6 +46,7 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/category/edit/{category}', name: 'app_category_edit', methods: ['GET', 'PATCH'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function editCategory(Request $request, Category $category): Response
     {
         $form = $this->createForm(CategoryCreateFormType::class, $category, ['method' => 'PATCH'])->handleRequest($request);
@@ -59,6 +61,7 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/category/delete/{category}', name: 'app_category_delete', methods: ['DELETE'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function deleteCategory(Request $request, Category $category): Response
     {
         if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {

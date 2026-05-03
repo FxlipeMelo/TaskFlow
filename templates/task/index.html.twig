@@ -43,6 +43,7 @@
                             {{ task.category }}
                         </h6>
 
+                        {% if is_granted('edit', task) %}
                         <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
 
                                 <button type="button" class="btn btn-sm btn-outline-danger shadow-sm px-2" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ task.id }}" title="Move to Trash">
@@ -64,6 +65,7 @@
                             </div>
 
                         </div>
+                        {% endif %}
 
                     </div>
                 </div>
@@ -83,6 +85,7 @@
     {% for task in taskList %}
 
         {# Modal de Delete #}
+        {% if is_granted('edit', task) %}
         <div class="modal fade" id="deleteModal-{{ task.id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ task.id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content border-0 shadow-lg">
@@ -109,6 +112,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
 
         {# Modal de Descrição #}
         <div class="modal fade" id="viewModal-{{ task.id }}" tabindex="-1" aria-labelledby="viewModalLabel-{{ task.id }}" aria-hidden="true">
@@ -135,7 +139,9 @@
 
                         <div>
                             <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Close</button>
-                            <a href="{{ path('app_task_edit', {task: task.id}) }}" class="btn btn-primary px-4 shadow-sm">Edit Task</a>
+                            {% if is_granted('edit', task) %}
+                                <a href="{{ path('app_task_edit', {task: task.id}) }}" class="btn btn-primary px-4 shadow-sm">Edit Task</a>
+                            {% endif %}
                         </div>
                     </div>
 

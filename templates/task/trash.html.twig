@@ -55,6 +55,7 @@
                                 </span>
                             </td>
                             <td class="text-end align-middle">
+                                {% if is_granted('edit', task) %}
                                 <div class="d-flex justify-content-end gap-2">
 
                                     <form method="post" action="{{ path('app_task_restore', {task: task.id}) }}">
@@ -70,6 +71,7 @@
                                     </button>
 
                                 </div>
+                                {% endif %}
                             </td>
                         </tr>
                     {% else %}
@@ -91,6 +93,7 @@
 {% block modals %}
     {% for task in taskList %}
 
+        {% if is_granted('edit', task) %}
         {# Modal de HARD Delete #}
         <div class="modal fade" id="deleteModal-{{ task.id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ task.id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -120,6 +123,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
 
         {# Modal de View #}
         <div class="modal fade" id="viewModal-{{ task.id }}" tabindex="-1" aria-labelledby="viewModalLabel-{{ task.id }}" aria-hidden="true">

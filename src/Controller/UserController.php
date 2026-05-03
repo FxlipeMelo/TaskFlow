@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class UserController extends AbstractController
 {
@@ -27,20 +28,21 @@ final class UserController extends AbstractController
     {
         $userList = $this->userRepository->findAll();
 
-        $user = $this->getUser();
+        $formProfile = [];
+        $formSecurity = [];
 
-        $formProfile = $this->createForm(UserProfileFormType::class, $user, ['method' => 'PATCH']);
-        $formSecurity = $this->createForm(UserSecurityFormType::class, $user, ['method' => 'PATCH']);
+        foreach ($userList as $user) {
+            $formProfile[$user->getId()] = $this->createForm(UserProfileFormType::class, $user, ['method' => 'PATCH'])->createView();
+            $formSecurity[$user->getId()] = $this->createForm(UserSecurityFormType::class, $user, ['method' => 'PATCH'])->createView();
+        }
 
         return $this->render('user/index.html.twig', compact('userList', 'formProfile', 'formSecurity'));
     }
 
     #[Route('/user/profile/edit/{user}', name: 'app_user_profile_edit', methods: ['PATCH'])]
+    #[IsGranted('edit', 'user')]
     public function profileEdit(Request $request, User $user): Response
     {
-        if ($user !== $this->getUser()) {
-            throw $this->createAccessDeniedException('Access Denied. You cannot edit other users.');
-        }
         $formProfile = $this->createForm(UserProfileFormType::class, $user, ['method' => 'PATCH'])->handleRequest($request);
 
         if ($formProfile->isSubmitted() && $formProfile->isValid()) {
@@ -51,20 +53,36 @@ final class UserController extends AbstractController
         }
 
         $userList = $this->userRepository->findAll();
-        $formSecurity = $this->createForm(UserSecurityFormType::class, $user, ['method' => 'PATCH']);
+
+        $formProfileArray = [];
+        $formSecurityArray = [];
+
+        foreach ($userList as $u) {
+            if ($u->getId() === $user->getId()) {
+                $formProfileArray[$u->getId()] = $formProfile->createView();
+            } else {
+                $formProfileArray[$u->getId()] = $this->createForm(UserProfileFormType::class, $u, ['method' => 'PATCH'])->createView();
+            }
+            $formSecurityArray[$u->getId()] = $this->createForm(UserSecurityFormType::class, $u, ['method' => 'PATCH'])->createView();
+        }
+
         $openModal = 'editProfileModal-' . $user->getId();
 
-        return $this->render('user/index.html.twig', compact('formProfile', 'userList', 'formSecurity', 'openModal'))
+
+
+        return $this->render('user/index.html.twig', [
+            'formProfile' => $formProfileArray,
+            'formSecurity' => $formSecurityArray,
+            'openModal' => $openModal,
+            'userList' => $userList
+        ])
             ->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     #[Route('/user/security/edit/{user}', name: 'app_user_security_edit', methods: ['PATCH'])]
+    #[IsGranted('edit', 'user')]
     public function securityEdit(Request $request, User $user): Response
     {
-        if ($user !== $this->getUser()) {
-            throw $this->createAccessDeniedException('Access Denied. You cannot edit other users.');
-        }
-
         $emailUser = $user->getEmail();
 
         $formSecurity = $this->createForm(UserSecurityFormType::class, $user, ['method' => 'PATCH'])->handleRequest($request);
@@ -97,10 +115,29 @@ final class UserController extends AbstractController
         }
 
         $userList = $this->userRepository->findAll();
-        $formProfile = $this->createForm(UserProfileFormType::class, $user, ['method' => 'PATCH']);
+
+        $formProfileArray = [];
+        $formSecurityArray = [];
+
+        foreach ($userList as $u) {
+            if ($u->getId() === $user->getId()) {
+                $formSecurityArray[$u->getId()] = $formSecurity->createView();
+            } else {
+                $formSecurityArray[$u->getId()] = $this->createForm(UserSecurityFormType::class, $u, ['method' => 'PATCH'])->createView();
+            }
+            $formProfileArray[$u->getId()] = $this->createForm(UserProfileFormType::class, $u, ['method' => 'PATCH'])->createView();
+        }
+
         $openModal = 'securityModal-' . $user->getId();
 
-        return $this->render('user/index.html.twig', compact('formSecurity', 'userList', 'formProfile', 'openModal'))
+
+
+        return $this->render('user/index.html.twig', [
+            'formProfile' => $formProfileArray,
+            'formSecurity' => $formSecurityArray,
+            'openModal' => $openModal,
+            'userList' => $userList,
+        ])
             ->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

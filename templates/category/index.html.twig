@@ -6,9 +6,11 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 mt-3">
         <h3 class="mb-3 mb-md-0 text-secondary fw-bold">Categories</h3>
 
+        {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_category_create') }}" class="btn btn-primary shadow-sm">
             ➕ New Category
         </a>
+        {% endif %}
     </div>
 
     {# CARD COM A LISTA VISUAL #}
@@ -23,6 +25,7 @@
                             {{ category.name }}
                         </span>
 
+                        {% if is_granted('ROLE_ADMIN') %}
                         <div class="d-flex gap-2">
                             <a href="{{ path('app_category_edit', {category: category.id}) }}"
                                class="btn btn-sm btn-outline-primary px-3">
@@ -34,6 +37,7 @@
                                 Delete
                             </button>
                         </div>
+                        {% endif %}
 
                     </li>
                 {% else %}
@@ -49,7 +53,7 @@
     {% block modals %}
 
         {# ZONA DOS MODAIS (Isolada fora das listas para evitar bugs)  #}
-
+        {% if is_granted('ROLE_ADMIN') %}
         {% for category in categoryList %}
             <div class="modal fade" id="deleteModal-{{ category.id }}" tabindex="-1"
                  aria-labelledby="deleteModalLabel-{{ category.id }}" aria-hidden="true">
@@ -64,7 +68,7 @@
                         </div>
 
                         <div class="modal-body fs-6 py-4">
-                            Are you sure you want to delete the priority <strong>"{{ category.name }}"</strong>? <br>
+                            Are you sure you want to delete the category <strong>"{{ category.name }}"</strong>? <br>
                             <span class="text-muted small">This action cannot be undone.</span>
                         </div>
 
@@ -82,5 +86,6 @@
                 </div>
             </div>
         {% endfor %}
+        {% endif %}
     {% endblock %}
 {% endblock %}

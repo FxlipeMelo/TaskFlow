@@ -58,7 +58,7 @@
                             {% endif %}
                         </td>
                         <td class="text-end align-middle">
-                            {% if app.user and app.user.id == user.id %}
+                            {% if is_granted('edit', user)%}
                                 <div class="d-flex justify-content-end gap-2">
                                     <button type="button" class="btn btn-sm btn-outline-secondary px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal-{{ user.id }}">
                                         Profile
@@ -91,7 +91,7 @@
     {% for user in userList %}
 
         {# Se for o próprio usuário, renderizamos o modal dele #}
-        {% if app.user and app.user.id == user.id %}
+        {% if is_granted('edit', user) %}
 
             <div class="modal fade" id="editProfileModal-{{ user.id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -101,20 +101,20 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
-                        {{ form_start(formProfile, {
+                        {{ form_start(formProfile[user.id], {
                             'action': path('app_user_profile_edit', {'user': user.id}),
                             'attr': {'data-turbo': 'false'}
                         }) }}
                             <div class="modal-body px-4 py-4 text-secondary">
                                 <div class="row g-3">
                                     <div class="col-6">
-                                        {{ form_row(formProfile.firstName, {
+                                        {{ form_row(formProfile[user.id].firstName, {
                                             'label_attr': {'class': 'form-label fw-bold small text-uppercase'},
                                             'attr': {'class': 'form-control bg-light border-0'}
                                         }) }}
                                     </div>
                                     <div class="col-6">
-                                        {{ form_row(formProfile.lastName, {
+                                        {{ form_row(formProfile[user.id].lastName, {
                                             'label_attr': {'class': 'form-label fw-bold small text-uppercase'},
                                             'attr': {'class': 'form-control bg-light border-0'}
                                         }) }}
@@ -127,7 +127,7 @@
                             </div>
 
 
-                        {{ form_end(formProfile) }}
+                        {{ form_end(formProfile[user.id]) }}
                     </div>
                 </div>
             </div>
@@ -140,13 +140,13 @@
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
-                        {{ form_start(formSecurity, {
+                        {{ form_start(formSecurity[user.id], {
                             'action': path('app_user_security_edit', {user: user.id}),
                             'attr': {'data-turbo': 'false'}
                         }) }}
                             <div class="modal-body px-4 py-4 text-secondary">
                                 <div class="mb-4">
-                                    {{ form_row(formSecurity.email, {
+                                    {{ form_row(formSecurity[user.id].email, {
                                         'label_attr': {'class': 'form-label fw-bold small text-uppercase'},
                                         'attr': {'class': 'form-control bg-light border-0'}
                                     }) }}
@@ -163,10 +163,10 @@
                                     <div class="collapse mt-2" id="collapsePassword-{{ user.id }}">
                                         <div class="card card-body bg-light border-0 p-3 shadow-inner">
                                             <div class="mb-2">
-                                                {{ form_row(formSecurity.newPassword.first, {
+                                                {{ form_row(formSecurity[user.id].newPassword.first, {
                                                     'attr': {'class': 'form-control form-control-sm border-0 mb-2'}
                                                 }) }}
-                                                {{ form_row(formSecurity.newPassword.second, {
+                                                {{ form_row(formSecurity[user.id].newPassword.second, {
                                                     'attr': {'class': 'form-control form-control-sm border-0'}
                                                 }) }}
                                             </div>
@@ -176,7 +176,7 @@
                                 </div>
 
                                 <div class="border-top pt-3">
-                                    {{ form_row(formSecurity.currentPassword, {
+                                    {{ form_row(formSecurity[user.id].currentPassword, {
                                         'label_attr': {'class': 'form-label fw-bold small text-uppercase text-danger'},
                                         'attr': {'class': 'form-control border-danger border-opacity-25'}
                                     }) }}
@@ -188,7 +188,7 @@
                                 <button type="submit" class="btn btn-danger px-4 shadow-sm">Save Security Data</button>
                             </div>
 
-                        {{ form_end(formSecurity) }}
+                        {{ form_end(formSecurity[user.id]) }}
                     </div>
                 </div>
             </div>

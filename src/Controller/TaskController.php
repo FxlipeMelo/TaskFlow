@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Spatie\Browsershot\Browsershot;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class TaskController extends AbstractController
 {
@@ -54,6 +55,7 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task/edit/{task}', name: 'app_task_edit', methods: ['GET', 'PATCH'])]
+    #[IsGranted('edit', 'task')]
     public function editTask(Request $request, Task $task): Response
     {
         $form = $this->createForm(TaskCreateFormType::class, $task, ['method' => 'PATCH'])->handleRequest($request);
@@ -68,6 +70,7 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task/delete/{task}', name: 'app_task_delete', methods: ['DELETE'])]
+    #[IsGranted('edit', 'task')]
     public function deleteTask(Request $request, Task $task): Response
     {
         if ($task->getDeletedAt() !== null) {
@@ -94,6 +97,7 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task/finished/{task}', name: 'app_task_finished', methods: ['PATCH'])]
+    #[IsGranted('edit', 'task')]
     public function taskFinished(Request $request, Task $task): Response
     {
         if ($task->getFinishedAt() !== null) {
@@ -167,6 +171,7 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task/restore/{task}', name: 'app_task_restore', methods: ['PATCH'])]
+    #[IsGranted('edit', 'task')]
     public function taskRestore(Request $request, Task $task): Response
     {
         if ($this->isCsrfTokenValid('restore'.$task->getId(), $request->request->get('_token'))) {
@@ -180,6 +185,7 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task/hardDelete/{task}', name: 'app_task_hard_delete', methods: ['DELETE'])]
+    #[IsGranted('edit', 'task')]
     public function taskHardDelete(Request $request, Task $task): Response
     {
         if ($this->isCsrfTokenValid('hard_delete'.$task->getId(), $request->request->get('_token'))) {

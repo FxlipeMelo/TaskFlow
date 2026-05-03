@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class PriorityController extends AbstractController
 {
@@ -29,6 +30,7 @@ final class PriorityController extends AbstractController
     }
 
     #[Route('/priority/create', name: 'app_priority_create', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function createPriority(Request $request): Response
     {
         $priority = new Priority();
@@ -44,6 +46,7 @@ final class PriorityController extends AbstractController
     }
 
     #[Route('/priority/edit/{priority}', name: 'app_priority_edit', methods: ['GET', 'PATCH'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function editPriority(Request $request, Priority $priority): Response
     {
         $form = $this->createForm(PriorityCreateFormType::class, $priority, ['method' => 'PATCH'])->handleRequest($request);
@@ -58,6 +61,7 @@ final class PriorityController extends AbstractController
     }
 
     #[Route('/priority/delete/{priority}', name: 'app_priority_delete', methods: ['DELETE'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function deletePriority(Request $request, Priority $priority): Response
     {
         if ($this->isCsrfTokenValid('delete'.$priority->getId(), $request->request->get('_token'))) {

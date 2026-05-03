@@ -52,6 +52,7 @@
                                 </span>
                             </td>
                             <td class="text-end align-middle">
+                                {% if is_granted('edit', task) %}
                                 <form method="post" action="{{ path('app_task_restore', {task: task.id}) }}">
                                     <input type="hidden" name="_method" value="PATCH">
                                     <input type="hidden" name="_token" value="{{ csrf_token('restore' ~ task.id) }}">
@@ -59,6 +60,7 @@
                                         Restore
                                     </button>
                                 </form>
+                                {% endif %}
                             </td>
                         </tr>
                     {% else %}
