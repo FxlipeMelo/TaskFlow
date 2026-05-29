@@ -2,8 +2,8 @@
 
 namespace App\Security;
 
-use App\Entity\User;
-use App\Enum\UserStatus;
+use App\Domain\Entity\User;
+use App\Domain\Enum\UserStatus;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;

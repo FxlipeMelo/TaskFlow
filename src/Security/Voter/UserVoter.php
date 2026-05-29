@@ -2,7 +2,7 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\User;
+use App\Domain\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
