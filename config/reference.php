@@ -889,13 +889,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     enable_profiler?: bool, // Whether or not to enable the profiler collector to calculate and visualize migration status. This adds some queries overhead. // Default: false
  *     transactional?: bool, // Whether or not to wrap migrations in a single transaction. // Default: true
  * }
- * @psalm-type DebugConfig = array{
- *     max_items?: int, // Max number of displayed items past the first level, -1 means no limit. // Default: 2500
- *     min_depth?: int, // Minimum tree depth to clone all the items, 1 is default. // Default: 1
- *     max_string_length?: int, // Max length of displayed strings, -1 means no limit. // Default: -1
- *     dump_destination?: scalar|null, // A stream URL where dumps should be written to. // Default: null
- *     theme?: "dark"|"light", // Changes the color of the dump() output when rendered directly on the templating. "dark" (default) or "light". // Default: "dark"
- * }
  * @psalm-type TwigConfig = array{
  *     form_themes?: list<scalar|null>,
  *     globals?: array<string, array{ // Default: []
@@ -1448,11 +1441,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         },
  *     }>,
  * }
- * @psalm-type MakerConfig = array{
- *     root_namespace?: scalar|null, // Default: "App"
- *     generate_final_classes?: bool, // Default: true
- *     generate_final_entities?: bool, // Default: false
- * }
  * @psalm-type WebpackEncoreConfig = array{
  *     output_path: scalar|null, // The path where Encore is building the assets - i.e. Encore.setOutputPath()
  *     crossorigin?: false|"anonymous"|"use-credentials", // crossorigin value when Encore.enableIntegrityHashes() is used, can be false (default), anonymous or use-credentials // Default: false
@@ -1471,6 +1459,18 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     lifetime?: int, // The length of time in seconds that a password reset request is valid for after it is created. // Default: 3600
  *     throttle_limit?: int, // Another password reset cannot be made faster than this throttle time in seconds. // Default: 3600
  *     enable_garbage_collection?: bool, // Enable/Disable automatic garbage collection. // Default: true
+ * }
+ * @psalm-type DebugConfig = array{
+ *     max_items?: int, // Max number of displayed items past the first level, -1 means no limit. // Default: 2500
+ *     min_depth?: int, // Minimum tree depth to clone all the items, 1 is default. // Default: 1
+ *     max_string_length?: int, // Max length of displayed strings, -1 means no limit. // Default: -1
+ *     dump_destination?: scalar|null, // A stream URL where dumps should be written to. // Default: null
+ *     theme?: "dark"|"light", // Changes the color of the dump() output when rendered directly on the templating. "dark" (default) or "light". // Default: "dark"
+ * }
+ * @psalm-type MakerConfig = array{
+ *     root_namespace?: scalar|null, // Default: "App"
+ *     generate_final_classes?: bool, // Default: true
+ *     generate_final_entities?: bool, // Default: false
  * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
