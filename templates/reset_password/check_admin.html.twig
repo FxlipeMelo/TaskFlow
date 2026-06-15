@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recovery Link Generated - TaskFlow{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+
+                <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
+                    <div class="card-header bg-light border-0 pt-4 px-4 text-center">
+                        <div class="mb-3 text-success">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg>
+                        </div>
+                        <h3 class="fw-bold text-dark mb-1">Link Generated Successfully!</h3>
+                        <p class="text-muted small">The recovery email was also sent to the team member.</p>
+                    </div>
+
+                    <div class="card-body px-4 pb-4 pt-3 text-secondary">
+
+                        <div class="mb-4 p-3 bg-light rounded border border-opacity-50">
+                            <div class="small text-uppercase fw-bold text-muted mb-1">Team Member</div>
+                            <div class="fw-bold text-dark fs-5">
+                                {% if user.firstName or user.lastName %}
+                                    {{ user.firstName }} {{ user.lastName }}
+                                {% else %}
+                                    <span class="text-muted fst-italic">Pending Setup</span>
+                                {% endif %}
+                            </div>
+                            <div class="small text-muted">{{ user.email }}</div>
+                        </div>
+
+                        <div class="alert alert-warning border-0 shadow-sm small mb-4" role="alert">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
+                                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                            </svg>
+                            This link is for <strong>single-use</strong> and automatically expires in 1 hour for security reasons.
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-dark">Manual Recovery Link</label>
+                            <div class="input-group shadow-sm">
+                                <input type="text" id="recoveryUrlInput" class="form-control bg-light border-0 py-2 fs-6 fw-mono" value="{{ url('app_reset_password', {token: resetToken.token}) }}" readonly>
+                                <button class="btn btn-dark px-3" type="button" id="btnCopyUrl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                    </svg>
+                                    <span id="btnCopyText" class="ms-1">Copy</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer bg-light border-0 px-4 py-3 d-flex justify-content-center">
+                        <a href="{{ path('app_user') }}" class="btn btn-outline-secondary px-5 shadow-sm">
+                            Back to Team Management
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -22,6 +22,7 @@ Encore
     .enableSassLoader()
     .addStyleEntry('style', './assets/styles/app.scss')
     .addEntry('search', './assets/js/searchFilter.js')
+    .addStyleEntry('clipboard', '/assets/js/clipboard.js')
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
 

@@ -173,4 +173,28 @@ class ResetPasswordController extends AbstractController
 
         return $this->redirectToRoute('app_check_email');
     }
+
+    #[Route('/reset-password-admin/{user}', name: 'app_reset_password_admin')]
+    public function resetPasswordAdmin(Request $request, User $user, MailerInterface $mailer, TranslatorInterface $translator): Response
+    {
+        try {
+            $resetToken = $this->resetPasswordHelper->generateResetToken($user);
+        } catch (ResetPasswordExceptionInterface $e) {
+            $this->addFlash('danger', 'Error generating token.');
+            return $this->redirectToRoute('app_user');
+        }
+
+        $email = (new TemplatedEmail())
+            ->from(new Address('security@example.com', 'Master'))
+            ->to((string) $user->getEmail())
+            ->subject('Your password reset request')
+            ->htmlTemplate('reset_password/email.html.twig')
+            ->context([
+                'resetToken' => $resetToken,
+            ]);
+
+        $mailer->send($email);
+
+        return $this->render('reset_password/check_admin.html.twig', compact('user', 'resetToken'));
+    }
 }

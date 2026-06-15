@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserProfileFormType;
+use App\Form\UserRoleFormType;
 use App\Form\UserSecurityFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
@@ -30,13 +31,15 @@ final class UserController extends AbstractController
 
         $formProfile = [];
         $formSecurity = [];
+        $formRole = [];
 
         foreach ($userList as $user) {
             $formProfile[$user->getId()] = $this->createForm(UserProfileFormType::class, $user, ['method' => 'PATCH'])->createView();
             $formSecurity[$user->getId()] = $this->createForm(UserSecurityFormType::class, $user, ['method' => 'PATCH'])->createView();
+            $formRole[$user->getId()] = $this->createForm(UserRoleFormType::class, $user, ['method' => 'PATCH'])->createView();
         }
 
-        return $this->render('user/index.html.twig', compact('userList', 'formProfile', 'formSecurity'));
+        return $this->render('user/index.html.twig', compact('userList', 'formProfile', 'formSecurity', 'formRole'));
     }
 
     #[Route('/user/profile/edit/{user}', name: 'app_user_profile_edit', methods: ['PATCH'])]
@@ -56,6 +59,7 @@ final class UserController extends AbstractController
 
         $formProfileArray = [];
         $formSecurityArray = [];
+        $formRoleArray = [];
 
         foreach ($userList as $u) {
             if ($u->getId() === $user->getId()) {
@@ -64,6 +68,7 @@ final class UserController extends AbstractController
                 $formProfileArray[$u->getId()] = $this->createForm(UserProfileFormType::class, $u, ['method' => 'PATCH'])->createView();
             }
             $formSecurityArray[$u->getId()] = $this->createForm(UserSecurityFormType::class, $u, ['method' => 'PATCH'])->createView();
+            $formRoleArray[$u->getId()] = $this->createForm(UserRoleFormType::class, $u, ['method' => 'PATCH'])->createView();
         }
 
         $openModal = 'editProfileModal-' . $user->getId();
@@ -73,6 +78,7 @@ final class UserController extends AbstractController
         return $this->render('user/index.html.twig', [
             'formProfile' => $formProfileArray,
             'formSecurity' => $formSecurityArray,
+            'formRole' => $formRoleArray,
             'openModal' => $openModal,
             'userList' => $userList
         ])
@@ -118,6 +124,7 @@ final class UserController extends AbstractController
 
         $formProfileArray = [];
         $formSecurityArray = [];
+        $formRoleArray = [];
 
         foreach ($userList as $u) {
             if ($u->getId() === $user->getId()) {
@@ -126,6 +133,7 @@ final class UserController extends AbstractController
                 $formSecurityArray[$u->getId()] = $this->createForm(UserSecurityFormType::class, $u, ['method' => 'PATCH'])->createView();
             }
             $formProfileArray[$u->getId()] = $this->createForm(UserProfileFormType::class, $u, ['method' => 'PATCH'])->createView();
+            $formRoleArray[$u->getId()] = $this->createForm(UserRoleFormType::class, $u, ['method' => 'PATCH'])->createView();
         }
 
         $openModal = 'securityModal-' . $user->getId();
@@ -135,8 +143,55 @@ final class UserController extends AbstractController
         return $this->render('user/index.html.twig', [
             'formProfile' => $formProfileArray,
             'formSecurity' => $formSecurityArray,
+            'formRole' => $formRoleArray,
             'openModal' => $openModal,
             'userList' => $userList,
+        ])
+            ->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    #[Route('/user/role/edit/{user}', name: 'app_user_role_edit', methods: ['PATCH'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function roleEdit(Request $request, User $user): Response
+    {
+        $formRole = $this->createForm(UserRoleFormType::class, $user, ['method' => 'PATCH'])->handleRequest($request);
+
+        if ($formRole->isSubmitted() && $formRole->isValid()) {
+            if ($user === $this->getUser() && !in_array('ROLE_ADMIN', $user->getRoles())) {
+                $this->addFlash('danger', 'Action Denied: You cannot remove your own Admin privileges!');
+                return $this->redirectToRoute('app_user');
+            }
+
+            $this->userRepository->update($user, true);
+            $this->addFlash('success', 'Role updated successfully!');
+
+            return $this->redirectToRoute('app_user');
+        }
+
+        $userList = $this->userRepository->findAll();
+
+        $formProfileArray = [];
+        $formSecurityArray = [];
+        $formRoleArray = [];
+
+        foreach ($userList as $u) {
+            if ($u->getId() === $user->getId()) {
+                $formRoleArray[$u->getId()] = $formRole->createView();
+            } else {
+                $formRoleArray[$u->getId()] = $this->createForm(UserRoleFormType::class, $u, ['method' => 'PATCH'])->createView();
+            }
+            $formProfileArray[$u->getId()] = $this->createForm(UserProfileFormType::class, $u, ['method' => 'PATCH'])->createView();
+            $formSecurityArray[$u->getId()] = $this->createForm(UserSecurityFormType::class, $u, ['method' => 'PATCH'])->createView();
+        }
+
+        $openModal = 'userRoleModal-' . $user->getId();
+
+        return $this->render('user/index.html.twig', [
+            'formRole' => $formRoleArray,
+            'formProfile' => $formProfileArray,
+            'formSecurity' => $formSecurityArray,
+            'userList' => $userList,
+            'openModal' => $openModal,
         ])
             ->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
     }

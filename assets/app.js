@@ -6,6 +6,7 @@ import './stimulus_bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.scss';
+import './js/clipboard.js';
 
 import * as bootstrap from 'bootstrap';
 

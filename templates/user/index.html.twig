@@ -67,7 +67,19 @@
                                     <button type="button" class="btn btn-sm btn-outline-danger px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#securityModal-{{ user.id }}">
                                         Security
                                     </button>
-                                </div>
+
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <button type="button" class="btn btn-sm btn-dark px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#userRoleModal-{{ user.id }}">
+                                            Permissions
+                                        </button>
+                                        <a href="{{ path('app_reset_password_admin', {user: user.id}) }}" class="btn btn-sm btn-outline-primary px-3 shadow-sm text-nowrap" title="Send Recovery Email & Link">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-key-fill me-1" style="margin-top: -2px;" viewBox="0 0 16 16">
+                                                <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                            </svg>
+                                            Recovery
+                                        </a>
+                                    {% endif %}
+                                 </div>
                             {% else %}
                                 <span class="text-muted small">Managed by Admin</span>
                             {% endif %}
@@ -192,7 +204,63 @@
                     </div>
                 </div>
             </div>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="modal fade" id="userRoleModal-{{ user.id }}" tabindex="-1" aria-labelledby="userRoleModalLabel-{{ user.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
 
+                    {# Cabeçalho Clean igual ao seu viewModal #}
+                    <div class="modal-header bg-light border-bottom-0 pt-4 px-4">
+                        <h4 class="modal-title fw-bold text-dark" id="userRoleModalLabel-{{ user.id }}">
+                            Manage Access Level
+                        </h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    {{ form_start(formRole[user.id], {
+                        'action': path('app_user_role_edit', {'user': user.id}),
+                        'attr': {'data-turbo': 'false'}
+                    }) }}
+
+                    {# Corpo do modal com os mesmos espaçamentos e cor de texto #}
+                    <div class="modal-body px-4 pb-4 fs-6 text-secondary">
+
+                        {# Informação do usuário integrada de forma leve #}
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark mb-0">
+                                {% if user.firstName or user.lastName %}
+                                    {{ user.firstName }} {{ user.lastName }}
+                                {% else %}
+                                    <span class="text-muted fst-italic">Pending Setup</span>
+                                {% endif %}
+                            </h5>
+                            <div class="text-muted">{{ user.email }}</div>
+                        </div>
+
+                        {# O Campo de Escolha do Cargo #}
+                        <div class="mb-3">
+                            {{ form_row(formRole[user.id].roles, {
+                                'label_attr': {'class': 'form-label fw-bold small text-uppercase text-dark'},
+                                'attr': {'class': 'form-select bg-light border-0 py-2 shadow-sm'}
+                            }) }}
+                        </div>
+
+                        <p class="small text-muted mb-0">
+                            Administrators have full access to all system settings, categories, and user management.
+                        </p>
+                    </div>
+
+                    {# Rodapé Clean igual ao seu viewModal #}
+                    <div class="modal-footer bg-light border-0 px-4 py-3 d-flex justify-content-end">
+                        <button type="button" class="btn btn-outline-secondary px-4 me-2" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary px-4 shadow-sm">Save Permissions</button>
+                    </div>
+
+                    {{ form_end(formRole[user.id]) }}
+                </div>
+            </div>
+        </div>
         {% endif %}
     {% endfor %}
 
