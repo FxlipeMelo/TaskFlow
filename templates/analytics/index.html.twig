@@ -51,36 +51,38 @@
         </div>
     </div>
 
-    {# FUTURO: PLACEHOLDERS DE GRÁFICOS #}
-    {# DEIXAR AQUI POR ENQUANTO #}
+    {#Analytics#}
     <div class="mt-5">
         <h5 class="fw-bold text-secondary mb-3">Overview</h5>
         <div class="row g-4">
 
-            {# Card Vazio 1 #}
+            {# Card 1 #}
             <div class="col-12 col-md-4">
-                <div class="card border-0 bg-white shadow-sm h-100 p-4 text-center rounded-4" style="border: 2px dashed #dee2e6 !important;">
-                    <div class="text-muted mb-2 fs-1">📊</div>
-                    <h6 class="text-secondary fw-bold">Completion Rate</h6>
-                    <p class="text-muted small mb-0">Charts coming soon...</p>
+                <div class="card border-0 bg-white shadow-sm h-100 p-4 text-center rounded-4">
+                    <h6 class="text-secondary fw-bold mb-3">Completion Rate</h6>
+                    <div class="position-relative w-100" style="height: 250px;">
+                        {{ render_chart(chartCompletionRate) }}
+                    </div>
                 </div>
             </div>
 
-            {# Card Vazio 2 #}
+            {# Card 2 #}
             <div class="col-12 col-md-4">
-                <div class="card border-0 bg-white shadow-sm h-100 p-4 text-center rounded-4" style="border: 2px dashed #dee2e6 !important;">
-                    <div class="text-muted mb-2 fs-1">📈</div>
-                    <h6 class="text-secondary fw-bold">Tasks by Category</h6>
-                    <p class="text-muted small mb-0">Charts coming soon...</p>
+                <div class="card border-0 bg-white shadow-sm h-100 p-4 text-center rounded-4">
+                    <h6 class="text-secondary fw-bold mb-4">Tasks by Category</h6>
+                    <div class="position-relative w-100" style="height: 250px">
+                        {{ render_chart(chartTaskByCategory) }}
+                    </div>
                 </div>
             </div>
 
-            {# Card Vazio 3 #}
+            {# Card 3 #}
             <div class="col-12 col-md-4">
-                <div class="card border-0 bg-white shadow-sm h-100 p-4 text-center rounded-4" style="border: 2px dashed #dee2e6 !important;">
-                    <div class="text-muted mb-2 fs-1">🔥</div>
+                <div class="card border-0 bg-white shadow-sm h-100 p-4 text-center rounded-4">
                     <h6 class="text-secondary fw-bold">Productivity Streak</h6>
-                    <p class="text-muted small mb-0">Charts coming soon...</p>
+                    <div class="position-relative w-100" style="height: 250px">
+                        {{ render_chart(chartProductivity) }}
+                    </div>
                 </div>
             </div>
 

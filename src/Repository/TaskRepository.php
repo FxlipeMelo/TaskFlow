@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Task;
 use App\Enum\TaskStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -69,6 +70,44 @@ class TaskRepository extends ServiceEntityRepository
         }
 
         $qb->orderBy($dateColumn, 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countTasks(?TaskStatus $status): int
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        $qb->select('COUNT(t.id)');
+
+        if ($status !== null) {
+            $qb->andWhere('t.status = :status')->setParameter('status', $status);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countTasksByCategory(): array
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        $qb->select('IDENTITY(t.category) as category, COUNT(t.id) as total')
+            ->andWhere('t.status != :status')
+            ->setParameter('status', TaskStatus::DELETED)
+            ->groupBy('t.category');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getFinishedTasksFromLast7Days(): array
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        $qb->select('t.finishedAt')
+            ->andWhere('t.status = :status')
+            ->setParameter('status', TaskStatus::FINISHED)
+            ->andWhere('t.finishedAt >= :limitDate')
+            ->setParameter('limitDate', new \DateTimeImmutable('-6 days'));
 
         return $qb->getQuery()->getResult();
     }
