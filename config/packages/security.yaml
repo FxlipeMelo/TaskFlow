@@ -31,6 +31,10 @@ security:
                 # where to redirect after logout
                 target: app_login
 
+            login_throttling:
+                max_attempts: 6
+                interval: '15 minutes'
+
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
 
