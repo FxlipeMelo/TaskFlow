@@ -51,9 +51,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'user')]
     private Collection $tasks;
 
+    #[ORM\ManyToMany(targetEntity: Workspace::class, inversedBy: 'users')]
+    private Collection $workspace;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->workspace = new ArrayCollection();
         $this->status = UserStatus::ACTIVE;
     }
 
@@ -174,5 +178,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->lastName = $lastName;
     }
 
+    public function getWorkspace(): Collection
+    {
+        return $this->workspace;
+    }
+
+    public function addWorkspace(Workspace $workspace): static
+    {
+        if (!$this->workspace->contains($workspace)) {
+            $this->workspace->add($workspace);
+        }
+
+        return $this;
+    }
+
+    public function removeWorkspace(Workspace $workspace): static
+    {
+        $this->workspace->removeElement($workspace);
+
+        return $this;
+    }
 
 }

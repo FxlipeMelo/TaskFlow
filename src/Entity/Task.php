@@ -40,6 +40,10 @@ class Task
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
     private User $user;
 
+    #[ORM\ManyToOne(targetEntity: Workspace::class, inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Workspace $workspace;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -169,6 +173,16 @@ class Task
     public function setUser(User $user): void
     {
         $this->user = $user;
+    }
+
+    public function getWorkspace(): Workspace
+    {
+        return $this->workspace;
+    }
+
+    public function setWorkspace(Workspace $workspace): void
+    {
+        $this->workspace = $workspace;
     }
 
 }
