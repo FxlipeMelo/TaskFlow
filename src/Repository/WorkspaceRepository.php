@@ -16,6 +16,33 @@ class WorkspaceRepository extends ServiceEntityRepository
         parent::__construct($registry, Workspace::class);
     }
 
+    public function add(Workspace $workspace, Bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($workspace);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Workspace $workspace, Bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($workspace);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function update(Workspace $workspace, Bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($workspace);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return Workspace[] Returns an array of Workspace objects
     //     */
