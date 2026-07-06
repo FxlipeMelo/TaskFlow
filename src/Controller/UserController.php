@@ -154,18 +154,39 @@ final class UserController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function roleEdit(Request $request, User $user): Response
     {
+        $userLastRole = $user->getRoles();
+        $userLastWorkspace = $user->getWorkspace()->toArray();
         $formRole = $this->createForm(UserRoleFormType::class, $user, ['method' => 'PATCH'])->handleRequest($request);
 
-        if ($formRole->isSubmitted() && $formRole->isValid()) {
-            if ($user === $this->getUser() && !in_array('ROLE_ADMIN', $user->getRoles())) {
-                $this->addFlash('danger', 'Action Denied: You cannot remove your own Admin privileges!');
+        if ($formRole->isSubmitted()) {
+            if ($formRole->isValid()) {
+                if ($user === $this->getUser() && !in_array('ROLE_ADMIN', $user->getRoles())) {
+                    $this->addFlash('danger', 'Action Denied: You cannot remove your own Admin privileges!');
+                    return $this->redirectToRoute('app_user');
+                }
+
+                $hasChanges = false;
+
+                if ($userLastRole !== $user->getRoles()) {
+                    $this->addFlash('success', 'Role updated successfully!');
+                    $hasChanges = true;
+                }
+
+                if ($userLastWorkspace !== $user->getWorkspace()->toArray()) {
+                    $this->addFlash('success', 'Workspace updated successfully!');
+                    $hasChanges = true;
+                }
+
+                if($hasChanges) {
+                    $this->userRepository->update($user, true);
+                }
+
                 return $this->redirectToRoute('app_user');
             }
 
-            $this->userRepository->update($user, true);
-            $this->addFlash('success', 'Role updated successfully!');
-
-            return $this->redirectToRoute('app_user');
+            foreach ($formRole->getErrors(true) as $error) {
+                $this->addFlash('danger', $error->getMessage());
+            }
         }
 
         $userList = $this->userRepository->findAll();

@@ -245,6 +245,14 @@
                                 'attr': {'class': 'form-select bg-light border-0 py-2 shadow-sm'}
                             }) }}
                         </div>
+                        <div class="mb-3">
+                            {{ form_label(formRole[user.id].workspace, 'Assigned Workspaces', {
+                                'label_attr': {'class': 'form-label fw-bold small text-uppercase text-dark'}
+                            }) }}
+                            <div class="bg-light border-0 p-3 shadow-sm rounded">
+                                {{ form_widget(formRole[user.id].workspace) }}
+                            </div>
+                        </div>
 
                         <p class="small text-muted mb-0">
                             Administrators have full access to all system settings, categories, and user management.
