@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Workspace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,6 +43,18 @@ class WorkspaceRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findWorkspacesByUser(User $user): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('w');
+
+        $qb->innerJoin('w.users', 'u')
+            ->where('u = :user')
+            ->setParameter('user', $user)
+            ->orderBy('w.name', 'ASC');
+
+        return $qb;
     }
 
     //    /**

@@ -43,7 +43,7 @@ final class TaskController extends AbstractController
 
         $task = new Task();
         $task->setUser($user);
-        $form = $this->createForm(TaskCreateFormType::class, $task)->handleRequest($request);
+        $form = $this->createForm(TaskCreateFormType::class, $task, ['user' => $this->getUser()])->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->taskRepository->add($task, true);
@@ -58,7 +58,7 @@ final class TaskController extends AbstractController
     #[IsGranted('edit', 'task')]
     public function editTask(Request $request, Task $task): Response
     {
-        $form = $this->createForm(TaskCreateFormType::class, $task, ['method' => 'PATCH'])->handleRequest($request);
+        $form = $this->createForm(TaskCreateFormType::class, $task, ['method' => 'PATCH', 'user' => $this->getUser()])->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->taskRepository->update($task, true);
