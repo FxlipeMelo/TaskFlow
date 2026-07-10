@@ -46,15 +46,22 @@ class TaskRepository extends ServiceEntityRepository
 
     }
 
-    public function findTasks(?TaskStatus $status, ?\DateTimeImmutable $startDate, ?\DateTimeImmutable $endDate): array
+    public function findTasks(?TaskStatus $status, ?\DateTimeImmutable $startDate, ?\DateTimeImmutable $endDate, ?int $workspaceId = null, ?User $user = null): array
     {
-        $qb = $this->createQueryBuilder('t');
+        $qb = $this->createQueryBuilder('t')
+            ->innerJoin('t.workspace', 'w')
+            ->innerJoin('w.users', 'u');
 
         $dateColumn = match ($status) {
             TaskStatus::FINISHED => 't.finishedAt',
             TaskStatus::DELETED => 't.deletedAt',
             default => 't.createdAt',
         };
+
+        if ($user !== null) {
+            $qb->andWhere('u = :user')
+                ->setParameter('user', $user);
+        }
 
         if ($status !== null) {
             $qb->andWhere('t.status = :status')
@@ -67,6 +74,11 @@ class TaskRepository extends ServiceEntityRepository
 
         if ($endDate !== null) {
             $qb->andWhere($dateColumn . ' <= :endDate')->setParameter('endDate', $endDate);
+        }
+
+        if ($workspaceId !== null) {
+            $qb->andWhere('w.id = :workspaceId')
+                ->setParameter('workspaceId', $workspaceId);
         }
 
         $qb->orderBy($dateColumn, 'ASC');

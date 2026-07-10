@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\User;
 use App\Enum\TaskStatus;
 use App\Repository\TaskRepository;
+use App\Repository\WorkspaceRepository;
 use Spatie\Browsershot\Browsershot;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +17,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class AnalyticsController extends AbstractController
 {
-    public function __construct(private TaskRepository $taskRepository, private ChartBuilderInterface $chartBuilder)
+    public function __construct(private TaskRepository $taskRepository, private ChartBuilderInterface $chartBuilder, private WorkspaceRepository $workspaceRepository)
     {
     }
 
@@ -145,15 +147,22 @@ class AnalyticsController extends AbstractController
     #[Route('/analytics/report/download', name: 'app_analytics_report_download', methods: ['GET'])]
     public function taskReportDownload(Request $request): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $statusRequest = $request->query->get('status');
         $dateStartRequest = $request->query->get('startDate');
         $dateEndRequest = $request->query->get('endDate');
+
+        $workspaceRequest = $request->query->get('workspace');
+        $workspaceId = $workspaceRequest ? (int)$workspaceRequest : null;
+        $workspace = $workspaceId ? $this->workspaceRepository->find($workspaceId) : null;
 
         $status = $statusRequest ? TaskStatus::tryFrom($statusRequest) : null;
         $dateStart = $dateStartRequest ? new \DateTimeImmutable($dateStartRequest) : null;
         $dateEnd = $dateEndRequest ? new \DateTimeImmutable($dateEndRequest . ' 23:59:59') : null;
 
-        $taskList = $this->taskRepository->findTasks($status, $dateStart, $dateEnd);
+        $taskList = $this->taskRepository->findTasks($status, $dateStart, $dateEnd, $workspaceId, $user);
         $manifestPath = $this->getParameter('kernel.project_dir') . '/public/build/manifest.json';
         $cssContent = '';
         if (file_exists($manifestPath)) {
@@ -172,7 +181,8 @@ class AnalyticsController extends AbstractController
             'filterStatus' => $status,
             'filterDateStart' => $dateStart,
             'filterDateEnd' => $dateEnd,
-            'generatedAt' => new \DateTimeImmutable()
+            'generatedAt' => new \DateTimeImmutable(),
+            'filterWorkspace' => $workspace,
         ]);
         $pdf = Browsershot::html($html)->format('A4')->margins(10,10,10,10)->showBackground()->pdf();
 

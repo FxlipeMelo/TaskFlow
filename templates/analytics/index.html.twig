@@ -29,6 +29,18 @@
                 </div>
 
                 <div class="col-12 col-md-4">
+                    <label for="workspace" class="form-label fw-bold small text-uppercase text-dark">Workspaces</label>
+                    <select name="workspace" id="workspace" class="form-select bg-light border-0 py-2 shadow-sm">
+                        <option value="">All Workspaces</option>
+                        {% for ws in app.user.workspace %}
+                            <option value="{{ ws.id }}" {% if app.request.query.get('workspace') == ws.id %} selected {% endif %}>
+                                {{ ws.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-4">
                     <label class="form-label text-muted small fw-bold text-uppercase">Start Date</label>
                     <input type="date" name="startDate" class="form-control form-control-lg bg-light border-0">
                 </div>
