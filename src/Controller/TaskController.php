@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Spatie\Browsershot\Browsershot;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class TaskController extends AbstractController
@@ -23,13 +22,16 @@ final class TaskController extends AbstractController
     }
 
     #[Route('/task', name: 'app_task', methods: ['GET'])]
-    public function taskList(): Response
+    public function taskList(Request $request): Response
     {
-        $taskList = $this->taskRepository->findBy(['status' => TaskStatus::OPEN], ['createdAt' => 'ASC']);
+        /** @var User $user */
+        $user = $this->getUser();
 
-        return $this->render('task/index.html.twig', [
-            'taskList' => $taskList
-        ]);
+        $session = $request->getSession()->get('active_workspace_id');
+
+        $taskList = $this->taskRepository->findTasksByContext($user, $session);
+
+        return $this->render('task/index.html.twig', compact('taskList'));
     }
 
     #[Route('/task/create', name: 'app_task_create', methods: ['GET', 'POST'])]

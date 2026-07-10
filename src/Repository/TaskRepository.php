@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\Category;
 use App\Entity\Task;
+use App\Entity\User;
 use App\Enum\TaskStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -110,6 +110,27 @@ class TaskRepository extends ServiceEntityRepository
             ->setParameter('limitDate', new \DateTimeImmutable('-6 days'));
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function findTasksByContext(User $user, ?int $activeWorkspaceId = null, TaskStatus $status = TaskStatus::OPEN): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->innerJoin('t.workspace', 'w')
+            ->innerJoin('w.users', 'u')
+            ->andWhere('u = :user')
+            ->setParameter('user', $user)
+            ->andWhere('t.status = :status')
+            ->setParameter('status', $status);
+
+        if ($activeWorkspaceId !== null) {
+            $qb->andWhere('w.id = :workspaceId')
+                ->setParameter('workspaceId', $activeWorkspaceId);
+        }
+
+        $qb->orderBy('t.id', 'DESC');
+
+        return $qb->getQuery()->getResult();
+
     }
     //    /**
     //     * @return Task[] Returns an array of Task objects

@@ -7,8 +7,22 @@
 
         <h3 class="mb-3 mb-md-0 text-secondary fw-bold">Task list</h3>
 
-        <div style="max-width: 250px; width: 100%;">
-            <input type="text" id="searchInput" class="form-control form-control-sm shadow-sm" placeholder="Search tasks..." aria-label="Search tasks">
+        <div class="d-flex flex-column flex-sm-row gap-2" style="max-width: 500px; width: 100%; justify-content: flex-end">
+            <select class="form-select form-select-sm shadow-sm" style="max-width: 200px;" aria-label="Select Workspace" id="workspaceSelect" onchange="window.location.href=this.value;">
+                <option value="{{ path('app_workspace_clear') }}" {% if not app.session.get('active_workspace_id') %} selected {% endif %}>
+                    All Workspaces
+                </option>
+
+                 {% for ws in app.user.workspace %}
+                     <option value="{{ path('app_workspace_switch', {workspace: ws.id}) }}" {% if app.session.get('active_workspace_id') == ws.id %} selected {% endif %}>
+                         {{ ws.name }}
+                     </option>
+                 {% endfor %}
+            </select>
+
+            <div style="max-width: 250px; width: 100%;">
+                <input type="text" id="searchInput" class="form-control form-control-sm shadow-sm" placeholder="Search tasks..." aria-label="Search tasks">
+            </div>
         </div>
 
     </div>
